@@ -1,1 +1,8 @@
 /.DS_Store
+/replit.nix
+/.replit
+/pyproject.toml
+/poetry.lock
+/.upm
+/.pythonlibs
+/.config
