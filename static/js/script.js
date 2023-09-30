@@ -4,8 +4,8 @@ const dropArea = document.querySelector(".drag-area"),
       input = dropArea.querySelector("input"),
       active = "active",
       dragNDrop = "Drag & Drop to Upload File",
-      resetBtn = document.querySelector("#reset-btn"),
       startBtn = document.querySelector("#start-btn"),
+      resetBtn = document.querySelector("#reset-btn"),
       audioExample1 = document.querySelector("#audio-example-1"),
       audioExample2 = document.querySelector("#audio-example-2"),
       audioExample3 = document.querySelector("#audio-example-3");
@@ -57,7 +57,7 @@ function showFile() {
 function makeAudioTag(fileURL, fileName) {
     return `
         <h2 class="text-white text-center mt-2 mb-4">${fileName ? fileName : fileURL}</h2>
-        <audio controls>
+        <audio controls class="mb-2">
             <source id="audio-source" src="${fileURL}">
             Your browser does not suppor the audio element.
         </audio>
