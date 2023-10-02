@@ -1,14 +1,16 @@
-import io
+import io, os
 import random
 
 import librosa
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, request, jsonify, make_response
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure
 
 # import IPython.display as ipd
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
+
+audioFile = None
 
 @app.route("/")
 def home():
@@ -31,11 +33,12 @@ def printInfo(ndarray):
 
 @app.route("/example")
 def example():
-    printInfo(yyy())
-    return 'hello'
+    # printInfo(yyy())
+    print(audioFile)
+    return "hello"
 
 
-@app.route('/plot.png')
+@app.route("/plot.png")
 def plot_png():
     fig = create_figure()
     output = io.BytesIO()
@@ -50,5 +53,12 @@ def create_figure():
     axis.plot(xs, ys)
     return fig
 
+@app.route("/api/audio", methods=['POST'])
+def cacheAudioFile():
+    if request.method == 'POST':
+        global audioFile 
+        audioFile = request.files['audio_file']
+        if audioFile: return jsonify(success=True)
+        return make_response(jsonify(success=False), 500)
 
 app.run(host='0.0.0.0', port=81)
