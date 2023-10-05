@@ -22,6 +22,15 @@ def print_info(ndarray):
     print('dtype: ', ndarray.dtype) # type of elements
     print()
 
+def get_info(ndarray):
+    return (
+        f" type: {type(ndarray)}\n"
+        f" ndim: {ndarray.ndim}\n"
+        f"shape: {ndarray.shape}\n"
+        f" size: {ndarray.size}\n"
+        f"dtype: {ndarray.dtype}\n"
+    )
+
 def get_image_data():
     # Generate the figure **without using pyplot**.
     fig = Figure()

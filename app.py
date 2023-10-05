@@ -29,13 +29,20 @@ def cache_audio_file():
 def start():
     if request.method == 'POST':
         global cached_tuple
-        if cached_tuple != ():
+        
+        if len(request.data) == 0:
+            if cached_tuple != ():
+                main.print_info(cached_tuple[0])
+        else:
+            cached_tuple = main.load(request.data.decode())
             main.print_info(cached_tuple[0])
-        return "hello"
+
+        return main.get_info(cached_tuple[0])
+
 
 @app.route("/example")
 def example():
     data = main.get_image_data()
     return f"<img src='data:image/png;base64,{data}'/>"
 
-app.run(host='0.0.0.0', port=81)
+app.run(host='0.0.0.0', port=5500)

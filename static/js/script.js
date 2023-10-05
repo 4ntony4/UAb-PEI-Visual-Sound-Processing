@@ -12,7 +12,7 @@ const dragArea = document.querySelector(".dragArea"),
       mModalTitle = $('#mModalTitle'),
       mModalMsg = $('#mModalMsg');
       
-const active = "active",
+const lighterBackground = "lighter_background",
       dNone = "d-none",
       error = "Error",
       dragNDropText = "Drag & Drop to Upload File",
@@ -28,17 +28,16 @@ browseBtn.click(() => {
 
 dragInput.addEventListener("change", function() {
     file = this.files[0];
-    dragArea.classList.add(active);
     loadAudioFile();
 });
 
 dragArea.addEventListener("dragover", (event) => {
     event.preventDefault();
-    dragArea.classList.add(active);
+    dragArea.classList.add(lighterBackground);
 });
 
 dragArea.addEventListener("dragleave", () => {
-    dragArea.classList.remove(active);
+    dragArea.classList.remove(lighterBackground);
 });
 
 dragArea.addEventListener("drop", (event) => {
@@ -54,14 +53,14 @@ function loadAudioFile() {
         let fileReader = new FileReader();
         fileReader.onload = () => {
             let fileURL = fileReader.result;
-            dragArea.classList.remove(active);
+            dragArea.classList.remove(lighterBackground);
             spinnerArea.removeClass(dNone);
             cacheAndShowAudioFile(file, fileURL);
         }
         fileReader.readAsDataURL(file);
     } else {
         showModalAudioSupported();
-        dragArea.classList.remove(active);
+        dragArea.classList.remove(lighterBackground);
     }
 }
 function cacheAndShowAudioFile(file, fileURL) {
@@ -75,27 +74,28 @@ function cacheAndShowAudioFile(file, fileURL) {
         contentType: false,
         success: (result) => {
             console.debug(result);
-            dragArea.classList.add(dNone);
             spinnerArea.addClass(dNone);
             showAudioTag(fileURL, file.name);
         },
         error: (err) => {
             console.debug(err);
+            spinnerArea.addClass(dNone);
             showModalServerError();
         }
     });
 }
 
 function showAudioTag(fileURL, fileName) {
+    dragArea.classList.add(dNone);
     audioControlArea.removeClass(dNone);
     audioControlArea.html(createAudioTag(fileURL, fileName));
 }
 
 function createAudioTag(fileURL, fileName) {
     return `
-        <h2 class="text-white text-center my-4">${fileName ? fileName : fileURL}</h2>
+        <h2 class="text-white text-center py-4">${fileName ? fileName : fileURL}</h2>
         <div class="d-flex justify-content-center">
-            <audio controls class="mb-4">
+            <audio controls class="pb-4">
                 <source id="audioSource" src="${fileURL}"/>
                 Your browser does not suppor the audio element.
             </audio>
@@ -104,18 +104,15 @@ function createAudioTag(fileURL, fileName) {
 }
 
 audioExample1.click(() => {
-    dragArea.innerHTML = createAudioTag("static/audio/440.wav", "Sine Wave: 440 Hz");
-    dragArea.classList.add(active);
+    showAudioTag("static/audio/440.wav", "Sine Wave: 440 Hz");
 });
 
 audioExample2.click(() => {
-    dragArea.innerHTML = createAudioTag("static/audio/acousticguitar-c-chord.mp3", "Acoustic Guitar: C Chord");
-    dragArea.classList.add(active);
+    showAudioTag("static/audio/acousticguitar_c_chord.mp3", "Acoustic Guitar: C Chord");
 });
 
 audioExample3.click(() => {
-    dragArea.innerHTML = createAudioTag("static/audio/solo-trumpet.mp3", "Solo Trumpet");
-    dragArea.classList.add(active);
+    showAudioTag("static/audio/solo_trumpet.mp3", "Solo Trumpet");
 });
 
 resetBtn.click(() => {
@@ -127,14 +124,16 @@ startBtn.click(() => {
         showModalFileMissing();
     } else {
         const source = $('#audioSource').attr('src');
-        if (source.startsWith("data")) {
-            // TODO
-        } else {
-            // TODO
+        let staticSource;
+        
+        if (!source.startsWith("data")) {
+            staticSource = source;
         }
+
         $.ajax({
             type: "POST",
             url: "/start",
+            data: staticSource,
             processData: false,
             contentType: false,
             success: (result) => {

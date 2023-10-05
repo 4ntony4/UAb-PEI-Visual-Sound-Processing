@@ -17,14 +17,12 @@ body {
     background: var(--background);
 }
 
-.mGrid3 {
-    grid-template-columns: 1fr 1fr 1fr;
+.lighter_background {
+    background: var(--lighter_background);
 }
 
-.cCenter {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+.mGrid3 {
+    grid-template-columns: 1fr 3fr 1fr;
 }
 
 .dragArea {
@@ -33,10 +31,6 @@ body {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-}
-
-.dragArea.active {
-    background: var(--lighter_background);
 }
 
 .dragArea .icon {
