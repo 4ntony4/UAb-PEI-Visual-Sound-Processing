@@ -1,5 +1,6 @@
-import py.main as main
 from flask import Flask, jsonify, make_response, render_template, request
+
+import py.main as main
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
