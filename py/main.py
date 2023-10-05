@@ -25,10 +25,10 @@ def print_info(ndarray):
 def get_info(ndarray):
     return (
         f" type: {type(ndarray)}\n"
-        f" ndim: {ndarray.ndim}\n"
+        f" ndim: {ndarray.ndim}\n" # num of dimensions (axes)
         f"shape: {ndarray.shape}\n"
-        f" size: {ndarray.size}\n"
-        f"dtype: {ndarray.dtype}\n"
+        f" size: {ndarray.size}\n" # total num of elements
+        f"dtype: {ndarray.dtype}\n" # type of elements
     )
 
 def get_image_data():
