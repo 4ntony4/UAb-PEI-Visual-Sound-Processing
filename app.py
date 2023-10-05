@@ -1,64 +1,38 @@
-import io, os
-import random
-
-import librosa
-from flask import Flask, Response, render_template, request, jsonify, make_response
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
-
-# import IPython.display as ipd
+import py.main as main
+from flask import Flask, jsonify, make_response, render_template, request
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
-audioFile = None
+cached_audio_file = None
+cached_tuple = ()
 
 @app.route("/")
 def home():
     return render_template('index.html')
 
-def yyy():
-    audioName = 'trumpet'
-    filename = librosa.ex(audioName)
-    y, sr = librosa.load(filename)
-    # ipd.Audio(y, rate=sr)
-    return y
+@app.route("/cache_audio_file", methods=['POST'])
+def cache_audio_file():
+    if request.method == 'POST':
+        try:
+            global cached_audio_file, cached_tuple
+            cached_audio_file = request.files['audio_file']
+            cached_tuple = main.load(cached_audio_file)
+            if cached_tuple != (): return jsonify(success=True)
+            return make_response(jsonify(success=False), 500)
+        except:
+            return make_response(jsonify(success=False), 500)
 
-def printInfo(ndarray):
-    print('type: ', type(ndarray))
-    print('ndim: ', ndarray.ndim) # num of dimensions (axes)
-    print('shape: ', ndarray.shape)
-    print('size: ', ndarray.size) # total num of elements
-    print('dtype: ', ndarray.dtype) # type of elements
-    print()
+@app.route("/start", methods=['POST'])
+def start():
+    if request.method == 'POST':
+        global cached_tuple
+        if cached_tuple != ():
+            main.print_info(cached_tuple[0])
+        return "hello"
 
 @app.route("/example")
 def example():
-    # printInfo(yyy())
-    print(audioFile)
-    return "hello"
-
-
-@app.route("/plot.png")
-def plot_png():
-    fig = create_figure()
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
-
-def create_figure():
-    fig = Figure()
-    axis = fig.add_subplot(1, 1, 1)
-    xs = range(100)
-    ys = [random.randint(1, 50) for x in xs]
-    axis.plot(xs, ys)
-    return fig
-
-@app.route("/api/audio", methods=['POST'])
-def cacheAudioFile():
-    if request.method == 'POST':
-        global audioFile 
-        audioFile = request.files['audio_file']
-        if audioFile: return jsonify(success=True)
-        return make_response(jsonify(success=False), 500)
+    data = main.get_image_data()
+    return f"<img src='data:image/png;base64,{data}'/>"
 
 app.run(host='0.0.0.0', port=81)

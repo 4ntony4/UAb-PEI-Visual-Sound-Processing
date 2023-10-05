@@ -1,5 +1,7 @@
 const dragArea = document.querySelector(".dragArea"),
       dragInput = dragArea.querySelector("#audioFile"),
+      spinnerArea = $('#spinnerArea'),
+      audioControlArea = $('#audioControlArea'),
       browseBtn = $('#browseBtn'),
       startBtn = $('#startBtn'),
       resetBtn = $('#resetBtn'),
@@ -11,6 +13,7 @@ const dragArea = document.querySelector(".dragArea"),
       mModalMsg = $('#mModalMsg');
       
 const active = "active",
+      dNone = "d-none",
       error = "Error",
       dragNDropText = "Drag & Drop to Upload File",
       audioSupportedText = "Only mpeg and wav files are supported.",
@@ -26,8 +29,7 @@ browseBtn.click(() => {
 dragInput.addEventListener("change", function() {
     file = this.files[0];
     dragArea.classList.add(active);
-    const success = showFile();
-    if(success == true) cacheFile(file);
+    loadAudioFile();
 });
 
 dragArea.addEventListener("dragover", (event) => {
@@ -42,22 +44,40 @@ dragArea.addEventListener("dragleave", () => {
 dragArea.addEventListener("drop", (event) => {
     event.preventDefault();
     file = event.dataTransfer.files[0];
-    const success = showFile();
-    if(success == true) cacheFile(file);
+    loadAudioFile();
 });
 
-function cacheFile(file) {
+function loadAudioFile() {
+    let fileType = file.type;
+    let validExtensions = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg"];
+    if (validExtensions.includes(fileType)) {
+        let fileReader = new FileReader();
+        fileReader.onload = () => {
+            let fileURL = fileReader.result;
+            dragArea.classList.remove(active);
+            spinnerArea.removeClass(dNone);
+            cacheAndShowAudioFile(file, fileURL);
+        }
+        fileReader.readAsDataURL(file);
+    } else {
+        showModalAudioSupported();
+        dragArea.classList.remove(active);
+    }
+}
+function cacheAndShowAudioFile(file, fileURL) {
     let formData = new FormData();
     formData.append('audio_file', file, file.name);
-    console.log(formData);
     $.ajax({
         type: "POST",
-        url: "/api/audio",
+        url: "/cache_audio_file",
         data: formData,
         processData: false,
         contentType: false,
         success: (result) => {
             console.debug(result);
+            dragArea.classList.add(dNone);
+            spinnerArea.addClass(dNone);
+            showAudioTag(fileURL, file.name);
         },
         error: (err) => {
             console.debug(err);
@@ -66,46 +86,35 @@ function cacheFile(file) {
     });
 }
 
-function showFile() {
-    let fileType = file.type;
-    let validExtensions = ["audio/mpeg", "audio/wav", "audio/x-wav", "audio/ogg"];
-    if (validExtensions.includes(fileType)) {
-        let fileReader = new FileReader();
-        fileReader.onload = () => {
-            let fileURL = fileReader.result;
-            dragArea.innerHTML = makeAudioTag(fileURL, file.name);
-        }
-        fileReader.readAsDataURL(file);
-        return true;
-    } else {
-        showModalAudioSupported();
-        dragArea.classList.remove(active);
-        return false;
-    }
+function showAudioTag(fileURL, fileName) {
+    audioControlArea.removeClass(dNone);
+    audioControlArea.html(createAudioTag(fileURL, fileName));
 }
 
-function makeAudioTag(fileURL, fileName) {
+function createAudioTag(fileURL, fileName) {
     return `
-        <h2 class="text-white text-center mt-2 mb-4">${fileName ? fileName : fileURL}</h2>
-        <audio controls class="mb-2">
-            <source id="audioSource" src="${fileURL}">
-            Your browser does not suppor the audio element.
-        </audio>
+        <h2 class="text-white text-center my-4">${fileName ? fileName : fileURL}</h2>
+        <div class="d-flex justify-content-center">
+            <audio controls class="mb-4">
+                <source id="audioSource" src="${fileURL}"/>
+                Your browser does not suppor the audio element.
+            </audio>
+        </div>
         `;
 }
 
 audioExample1.click(() => {
-    dragArea.innerHTML = makeAudioTag("static/audio/440.wav", "Sine Wave: 440 Hz");
+    dragArea.innerHTML = createAudioTag("static/audio/440.wav", "Sine Wave: 440 Hz");
     dragArea.classList.add(active);
 });
 
 audioExample2.click(() => {
-    dragArea.innerHTML = makeAudioTag("static/audio/acousticguitar-c-chord.mp3", "Acoustic Guitar: C Chord");
+    dragArea.innerHTML = createAudioTag("static/audio/acousticguitar-c-chord.mp3", "Acoustic Guitar: C Chord");
     dragArea.classList.add(active);
 });
 
 audioExample3.click(() => {
-    dragArea.innerHTML = makeAudioTag("static/audio/solo-trumpet.mp3", "Solo Trumpet");
+    dragArea.innerHTML = createAudioTag("static/audio/solo-trumpet.mp3", "Solo Trumpet");
     dragArea.classList.add(active);
 });
 
@@ -114,7 +123,7 @@ resetBtn.click(() => {
 });
 
 startBtn.click(() => {
-    if (!dragArea.classList.contains('active')) {
+    if (audioControlArea.hasClass(dNone)) {
         showModalFileMissing();
     } else {
         const source = $('#audioSource').attr('src');
@@ -123,6 +132,19 @@ startBtn.click(() => {
         } else {
             // TODO
         }
+        $.ajax({
+            type: "POST",
+            url: "/start",
+            processData: false,
+            contentType: false,
+            success: (result) => {
+                console.debug(result);
+            },
+            error: (err) => {
+                console.debug(err);
+                showModalServerError();
+            }
+        });
     }
 });
 
