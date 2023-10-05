@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, make_response, render_template, request
 
 import py.main as main
+# import main # for replit use
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 

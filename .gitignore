@@ -6,4 +6,6 @@
 /poetry.lock
 /pyproject.toml
 /replit.nix
+/__pycache__
 /py/__pycache__
+/main.py

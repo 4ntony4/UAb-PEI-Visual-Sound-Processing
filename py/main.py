@@ -1,7 +1,8 @@
+import base64
+from io import BytesIO
+
 import librosa
 from matplotlib.figure import Figure
-from io import BytesIO
-import base64
 
 def load(cached_audio_file):
     return librosa.load(cached_audio_file)
