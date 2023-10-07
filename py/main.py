@@ -1,12 +1,9 @@
 import base64
-from io import BytesIO
+import io
 
 import librosa
 import matplotlib
-from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-import numpy as np
-import io
 
 matplotlib.use('agg')
 
