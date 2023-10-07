@@ -21,9 +21,11 @@ const lighterBackground = "lighter_background",
       serverErrorText = "Server Internal Error. Please try again later.";
 
 const optionsDiv = $('#optionsDiv'),
-      visualizeAudioBtn = $('#visualizeAudioBtn'),
+      waveBtn = $('#waveBtn'),
+      specBtn = $('#specBtn'),
       imgDiv = $('#imgDiv'),
-      waveImg = $('#waveImg');
+      waveImg = $('#waveImg'),
+      specImg = $('#specImg');
 
 let file;
 
@@ -162,11 +164,19 @@ startBtn.click(() => {
     }
 });
 
-visualizeAudioBtn.click(() => {    
+waveBtn.click(() => {    
     ajax.post(
         "/waveshow",
         null,
         (result) => waveImg.attr('src', result)
+    );
+});
+
+specBtn.click(() => {
+    ajax.post(
+        "/specshow",
+        null,
+        (result) => specImg.attr('src', result)
     );
 });
 

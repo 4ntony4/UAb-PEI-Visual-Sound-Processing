@@ -4,10 +4,10 @@ import io
 import librosa
 import matplotlib
 import matplotlib.pyplot as plt
-import numpy
+import numpy as np
 
 matplotlib.use('agg')
-Pair = tuple[numpy.ndarray, float]
+Pair = tuple[np.ndarray, float]
 
 def load(cached_audio_file, sr = 22050):
     return librosa.load(cached_audio_file, sr = sr)
@@ -47,5 +47,24 @@ def stft(y):
     return librosa.stft(y)
 
 # Inverse Short-time Fourier Transform (ISTFT)
-def istft(f_matrix):
-    return librosa.istft(f_matrix)
+def istft(stft_matrix):
+    return librosa.istft(stft_matrix)
+
+# Convert an amplitude spectrogram to dB-scaled spectrogram.
+def amplitude_to_db(D):
+    return librosa.amplitude_to_db(np.abs(D), ref=np.max)
+
+# Convert a dB-scaled spectrogram to an amplitude spectrogram.
+def db_to_amplitude(S_db):
+    return librosa.db_to_amplitude(S_db)
+
+def specshow(y):
+    D = stft(y)
+    S_db = amplitude_to_db(D)
+
+    fig, ax = plt.subplots()
+    img = librosa.display.specshow(S_db, x_axis='time', y_axis='linear', ax=ax)
+    ax.set(title='Spectrogram')
+    fig.colorbar(img, ax=ax, format="%+2.f dB")
+
+    return get_png_from_pyplot()

@@ -58,4 +58,13 @@ def waveshow():
         except:
             return response_error()
 
+@app.route("/specshow", methods=['POST'])
+def specshow():
+    if request.method == 'POST':
+        try:
+            data = m.specshow(cached_pair[0])
+            return f"data:image/png;base64,{data}"
+        except:
+            return response_error()
+
 app.run(host='0.0.0.0', port=5500)
