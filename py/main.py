@@ -4,8 +4,10 @@ import io
 import librosa
 import matplotlib
 import matplotlib.pyplot as plt
+import numpy
 
 matplotlib.use('agg')
+Pair = tuple[numpy.ndarray, float]
 
 def load(cached_audio_file, sr = 22050):
     return librosa.load(cached_audio_file, sr = sr)
@@ -19,8 +21,8 @@ def get_info_ndarray(ndarray):
         f"dtype: {ndarray.dtype}\n" # type of elements
     )
 
-def get_info_tuple(t):
-    return get_info_ndarray(t[0]) + f"   sr: {t[1]}"
+def get_info_pair(pair: Pair):
+    return get_info_ndarray(pair[0]) + f"\n   sr: {pair[1]}"
 
 def get_png_from_pyplot():
     # Save plot to a BytesIO object
@@ -32,10 +34,18 @@ def get_png_from_pyplot():
 
     return img_b64
 
-def get_visualize_audio(t):
+def waveshow(pair):
     plt.figure()
-    librosa.display.waveshow(y = t[0], sr = t[1])
+    librosa.display.waveshow(y = pair[0], sr = pair[1])
     plt.xlabel("Time (seconds)")
     plt.ylabel("Amplitude")
 
     return get_png_from_pyplot()
+
+# Short-time Fourier Transform (STFT)
+def stft(y):
+    return librosa.stft(y)
+
+# Inverse Short-time Fourier Transform (ISTFT)
+def istft(f_matrix):
+    return librosa.istft(f_matrix)

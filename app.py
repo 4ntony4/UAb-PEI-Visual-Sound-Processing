@@ -5,7 +5,9 @@ import py.main as m
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
 cached_audio_file = None
-cached_tuple = ()
+
+# Pair = tuple[numpy.ndarray, float]
+cached_pair = ()
 
 def response_ok():
     return jsonify(success=True)
@@ -21,10 +23,10 @@ def home():
 def cache_audio_file():
     if request.method == 'POST':
         try:
-            global cached_audio_file, cached_tuple
+            global cached_audio_file, cached_pair
             cached_audio_file = request.files['audio_file']
-            cached_tuple = m.load(cached_audio_file)
-            if cached_tuple != (): return response_ok()
+            cached_pair = m.load(cached_audio_file)
+            if cached_pair != (): return response_ok()
             return response_error()
         except:
             return response_error()
@@ -33,25 +35,25 @@ def cache_audio_file():
 def start():
     if request.method == 'POST':
         try:
-            global cached_tuple
+            global cached_pair
             
             if len(request.data) == 0:
-                if cached_tuple != ():
-                    print(m.get_info_tuple(cached_tuple))
+                if cached_pair != ():
+                    print(m.get_info_pair(cached_pair))
 
             else:
-                cached_tuple = m.load(request.data.decode())
-                print(m.get_info_tuple(cached_tuple))
+                cached_pair = m.load(request.data.decode())
+                print(m.get_info_pair(cached_pair))
 
             return response_ok()
         except:
             return response_error()
 
-@app.route("/visualize_audio", methods=['POST'])
-def visualize_audio():
+@app.route("/waveshow", methods=['POST'])
+def waveshow():
     if request.method == 'POST':
         try:
-            data = m.get_visualize_audio(cached_tuple)
+            data = m.waveshow(cached_pair)
             return f"data:image/png;base64,{data}"
         except:
             return response_error()

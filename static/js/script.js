@@ -27,6 +27,31 @@ const optionsDiv = $('#optionsDiv'),
 
 let file;
 
+const ajax = {
+    post: (url, data, successCallback, errorCallback) => {
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: data,
+            processData: false,
+            contentType: false,
+            success: (result) => {
+                if (successCallback) {
+                    successCallback(result);
+                }
+            },
+            error: (err) => {
+                if (err.status == 500) {
+                    showModalServerError();
+                }
+                if (errorCallback) {
+                    errorCallback(err);
+                }
+            }
+        });
+    }
+}
+
 browseBtn.click(() => {
     dragInput.click();
 });
@@ -68,26 +93,20 @@ function loadAudioFile() {
         dragArea.classList.remove(lighterBackground);
     }
 }
+
 function cacheAndShowAudioFile(file, fileURL) {
     let formData = new FormData();
     formData.append('audio_file', file, file.name);
-    $.ajax({
-        type: "POST",
-        url: "/cache_audio_file",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: (result) => {
-            console.debug(result);
+    
+    ajax.post(
+        "/cache_audio_file",
+        formData,
+        () => {
             spinnerArea.addClass(dNone);
             showAudioTag(fileURL, file.name);
         },
-        error: (err) => {
-            console.debug(err);
-            spinnerArea.addClass(dNone);
-            showModalServerError();
-        }
-    });
+        () => spinnerArea.addClass(dNone)
+    );
 }
 
 function showAudioTag(fileURL, fileName) {
@@ -135,38 +154,20 @@ startBtn.click(() => {
             staticSource = source;
         }
 
-        $.ajax({
-            type: "POST",
-            url: "/start",
-            data: staticSource,
-            processData: false,
-            contentType: false,
-            success: (result) => {
-                console.debug(result);
-                optionsDiv.removeClass(dNone);
-            },
-            error: (err) => {
-                console.debug(err);
-                showModalServerError();
-            }
-        });
+        ajax.post(
+            "/start",
+            staticSource,
+            () => optionsDiv.removeClass(dNone)
+        );
     }
 });
 
-visualizeAudioBtn.click(() => {
-    $.ajax({
-        type: "POST",
-        url: "/visualize_audio",
-        processData: false,
-        contentType: false,
-        success: (result) => {
-            waveImg.attr('src', result);
-        },
-        error: (err) => {
-            console.debug(err);
-            showModalServerError();
-        }
-    });
+visualizeAudioBtn.click(() => {    
+    ajax.post(
+        "/waveshow",
+        null,
+        (result) => waveImg.attr('src', result)
+    );
 });
 
 function showModalAudioSupported() {
