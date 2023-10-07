@@ -20,6 +20,11 @@ const lighterBackground = "lighter_background",
       fileMissingText = "File missing.",
       serverErrorText = "Server Internal Error. Please try again later.";
 
+const optionsDiv = $('#optionsDiv'),
+      visualizeAudioBtn = $('#visualizeAudioBtn'),
+      imgDiv = $('#imgDiv'),
+      waveImg = $('#waveImg');
+
 let file;
 
 browseBtn.click(() => {
@@ -138,6 +143,7 @@ startBtn.click(() => {
             contentType: false,
             success: (result) => {
                 console.debug(result);
+                optionsDiv.removeClass(dNone);
             },
             error: (err) => {
                 console.debug(err);
@@ -145,6 +151,22 @@ startBtn.click(() => {
             }
         });
     }
+});
+
+visualizeAudioBtn.click(() => {
+    $.ajax({
+        type: "POST",
+        url: "/visualize_audio",
+        processData: false,
+        contentType: false,
+        success: (result) => {
+            waveImg.attr('src', result);
+        },
+        error: (err) => {
+            console.debug(err);
+            showModalServerError();
+        }
+    });
 });
 
 function showModalAudioSupported() {

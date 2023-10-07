@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, make_response, render_template, request
 
-import py.main as main
+import py.main as m
 
 # import main_c as main # for replit use
 
@@ -8,6 +8,12 @@ app = Flask(__name__, template_folder='templates', static_folder='static')
 
 cached_audio_file = None
 cached_tuple = ()
+
+def response_ok():
+    return jsonify(success=True)
+
+def response_error():
+    return make_response(jsonify(success=False), 500)
 
 @app.route("/")
 def home():
@@ -19,30 +25,40 @@ def cache_audio_file():
         try:
             global cached_audio_file, cached_tuple
             cached_audio_file = request.files['audio_file']
-            cached_tuple = main.load(cached_audio_file)
-            if cached_tuple != (): return jsonify(success=True)
-            return make_response(jsonify(success=False), 500)
+            cached_tuple = m.load(cached_audio_file)
+            if cached_tuple != (): return response_ok()
+            return response_error()
         except:
-            return make_response(jsonify(success=False), 500)
+            return response_error()
 
 @app.route("/start", methods=['POST'])
 def start():
     if request.method == 'POST':
-        global cached_tuple
-        
-        if len(request.data) == 0:
-            if cached_tuple != ():
-                main.print_info(cached_tuple[0])
-        else:
-            cached_tuple = main.load(request.data.decode())
-            main.print_info(cached_tuple[0])
+        try:
+            global cached_tuple
+            
+            if len(request.data) == 0:
+                if cached_tuple != ():
+                    print(m.get_info_tuple(cached_tuple))
 
-        return main.get_info(cached_tuple[0])
+            else:
+                cached_tuple = m.load(request.data.decode())
+                print(m.get_info_tuple(cached_tuple))
 
+            return response_ok()
+        except:
+            return response_error()
 
-@app.route("/example")
-def example():
-    data = main.get_image_data()
-    return f"<img src='data:image/png;base64,{data}'/>"
+@app.route("/visualize_audio", methods=['POST'])
+def visualize_audio():
+    if request.method == 'POST':
+        try:
+            data = m.get_visualize_audio(cached_tuple)
+            return f"data:image/png;base64,{data}"
+        except:
+            return response_error()
+    # data = m.s(cached_tuple)
+    # return f"<img src='data:image/png;base64,{data}'/>"
+    return response_error()
 
 app.run(host='0.0.0.0', port=5500)

@@ -2,27 +2,18 @@ import base64
 from io import BytesIO
 
 import librosa
+import matplotlib
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+import numpy as np
+import io
 
-def load(cached_audio_file):
-    return librosa.load(cached_audio_file)
+matplotlib.use('agg')
 
-def yyy(file):
-    # audioName = 'trumpet'
-    # filename = librosa.ex(audioName)
-    y, sr = librosa.load(file)
-    print_info(y)
-    print(sr)
+def load(cached_audio_file, sr = 22050):
+    return librosa.load(cached_audio_file, sr = sr)
 
-def print_info(ndarray):
-    print('type: ', type(ndarray))
-    print('ndim: ', ndarray.ndim) # num of dimensions (axes)
-    print('shape: ', ndarray.shape)
-    print('size: ', ndarray.size) # total num of elements
-    print('dtype: ', ndarray.dtype) # type of elements
-    print()
-
-def get_info(ndarray):
+def get_info_ndarray(ndarray):
     return (
         f" type: {type(ndarray)}\n"
         f" ndim: {ndarray.ndim}\n" # num of dimensions (axes)
@@ -31,13 +22,23 @@ def get_info(ndarray):
         f"dtype: {ndarray.dtype}\n" # type of elements
     )
 
-def get_image_data():
-    # Generate the figure **without using pyplot**.
-    fig = Figure()
-    ax = fig.subplots()
-    ax.plot([1, 2])
-    # Save it to a temporary buffer.
-    buf = BytesIO()
-    fig.savefig(buf, format="png")
-    # Embed the result in the html output.
-    return base64.b64encode(buf.getbuffer()).decode("ascii")
+def get_info_tuple(t):
+    return get_info_ndarray(t[0]) + f"   sr: {t[1]}"
+
+def get_png_from_pyplot():
+    # Save plot to a BytesIO object
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+
+    # Convert BytesIO object to base64 string
+    img_b64 = base64.b64encode(buf.getbuffer()).decode()
+
+    return img_b64
+
+def get_visualize_audio(t):
+    plt.figure()
+    librosa.display.waveshow(y = t[0], sr = t[1])
+    plt.xlabel("Time (seconds)")
+    plt.ylabel("Amplitude")
+
+    return get_png_from_pyplot()
