@@ -1,11 +1,1 @@
-/.config
-/.DS_Store
-/.pythonlibs
-/.replit
-/.upm
-/poetry.lock
-/pyproject.toml
-/replit.nix
-/__pycache__
 /py/__pycache__
-/main_c.py

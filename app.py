@@ -2,8 +2,6 @@ from flask import Flask, jsonify, make_response, render_template, request
 
 import py.main as m
 
-# import main_c as main # for replit use
-
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
 cached_audio_file = None
@@ -57,8 +55,5 @@ def visualize_audio():
             return f"data:image/png;base64,{data}"
         except:
             return response_error()
-    # data = m.s(cached_tuple)
-    # return f"<img src='data:image/png;base64,{data}'/>"
-    return response_error()
 
 app.run(host='0.0.0.0', port=5500)
