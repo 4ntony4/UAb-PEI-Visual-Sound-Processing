@@ -3,7 +3,6 @@ const dragArea = document.querySelector(".dragArea"),
       spinnerArea = $('#spinnerArea'),
       audioControlArea = $('#audioControlArea'),
       browseBtn = $('#browseBtn'),
-      startBtn = $('#startBtn'),
       resetBtn = $('#resetBtn'),
       audioExample1 = $('#audioExample1'),
       audioExample2 = $('#audioExample2'),
@@ -106,6 +105,7 @@ function cacheAndShowAudioFile(file, fileURL) {
         () => {
             spinnerArea.addClass(dNone);
             showAudioTag(fileURL, file.name);
+            start();
         },
         () => spinnerArea.addClass(dNone)
     );
@@ -115,6 +115,7 @@ function showAudioTag(fileURL, fileName) {
     dragArea.classList.add(dNone);
     audioControlArea.removeClass(dNone);
     audioControlArea.html(createAudioTag(fileURL, fileName));
+    start();
 }
 
 function createAudioTag(fileURL, fileName) {
@@ -145,7 +146,7 @@ resetBtn.click(() => {
     location.reload();
 });
 
-startBtn.click(() => {
+function start() {
     if (audioControlArea.hasClass(dNone)) {
         showModalFileMissing();
     } else {
@@ -155,29 +156,37 @@ startBtn.click(() => {
         if (!source.startsWith("data")) {
             staticSource = source;
         }
-
+        
         ajax.post(
             "/start",
             staticSource,
             () => optionsDiv.removeClass(dNone)
         );
     }
-});
+}
 
-waveBtn.click(() => {    
-    ajax.post(
-        "/waveshow",
-        null,
-        (result) => waveImg.attr('src', result)
-    );
+waveBtn.click(() => {
+    if (!waveImg.attr('src')) {
+        ajax.post(
+            "/waveshow",
+            null,
+            (result) => waveImg.attr('src', result)
+        );
+    }
+    waveImg.removeClass(dNone);
+    specImg.addClass(dNone);
 });
 
 specBtn.click(() => {
-    ajax.post(
-        "/specshow",
-        null,
-        (result) => specImg.attr('src', result)
-    );
+    if (!specImg.attr('src')) {
+        ajax.post(
+            "/specshow",
+            null,
+            (result) => specImg.attr('src', result)
+        );
+    }
+    specImg.removeClass(dNone);
+    waveImg.addClass(dNone);
 });
 
 function showModalAudioSupported() {

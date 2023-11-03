@@ -17,7 +17,6 @@
                     <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                     </ul>
                     <div class="text-end">
-                        <button type="button" class="btn btn-outline-light me-2" id="startBtn">Start</button>
                         <button type="button" class="btn btn-outline-light me-2" id="resetBtn">Reset</button>
                     </div>
                 </div>
@@ -59,17 +58,24 @@
             </div>
         </div>
 
-        <div id="optionsDiv" class="container-fluid pb-3 d-none">
-            <div class="d-flex justify-content-center">
-                <button type="button" class="btn btn-outline-light me-2" id="waveBtn">Wave</button>
-                <button type="button" class="btn btn-outline-light me-2" id="specBtn">Spectrogram</button>
-            </div>
-        </div>
-        
-        <div id="imgDiv" class="container-fluid pb-3">
-            <div class="d-flex justify-content-center">
-                <img id="waveImg"/>
-                <img id="specImg"/>
+        <div class="container-fluid pb-3">
+            <div class="d-grid mGrid2">
+                <div>
+                    <div id="optionsDiv" class="container-fluid d-none">
+                        <div class="d-flex flex-column justify-content-center">
+                            <button type="button" class="btn btn-outline-light m-1" id="waveBtn">Wave</button>
+                            <button type="button" class="btn btn-outline-light m-1" id="specBtn">Spectrogram</button>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div id="imgDiv" class="container-fluid">
+                        <div class="d-flex justify-content-center" id="imgDivDFlex">
+                            <img id="waveImg" class="img-fluid d-none"/>
+                            <img id="specImg"class="img-fluid d-none"/>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
