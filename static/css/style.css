@@ -2,8 +2,10 @@
 
 :root {
     --white: #fff;
+    --whitish: #f8f9fa;
     --background: #5256ad;
     --lighter_background: #6c6fae;
+    --form-select-bg-img-white: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
 
 * {
@@ -26,7 +28,7 @@ body {
 }
 
 .mGrid2 {
-    grid-template-columns: 1fr 4.5fr;
+    grid-template-columns: 1fr 5fr;
 }
 
 .dragArea {
@@ -68,4 +70,20 @@ body {
     color: var(--background);
     border-radius: 5px;
     cursor: pointer;
+}
+
+.form-select {
+    color: var(--whitish);
+    background: var(--background);
+    background-image: var(--form-select-bg-img-white);
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    border-color: var(--whitish);
+    width: auto;
+}
+
+.form-select:focus {
+    border-color: var(--whitish);
+    box-shadow: none;
 }

@@ -1,6 +1,7 @@
 from flask import Flask, jsonify, make_response, render_template, request
 
-import py.main as m
+import py.main as main
+import py.filters as filters
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -25,7 +26,7 @@ def cache_audio_file():
         try:
             global cached_audio_file, cached_pair
             cached_audio_file = request.files['audio_file']
-            cached_pair = m.load(cached_audio_file)
+            cached_pair = main.load(cached_audio_file)
             if cached_pair != (): return response_ok()
             return response_error()
         except:
@@ -39,11 +40,11 @@ def start():
             
             if len(request.data) == 0:
                 if cached_pair != ():
-                    print(m.get_info_pair(cached_pair))
+                    print(main.get_info_pair(cached_pair))
 
             else:
-                cached_pair = m.load(request.data.decode())
-                print(m.get_info_pair(cached_pair))
+                cached_pair = main.load(request.data.decode())
+                print(main.get_info_pair(cached_pair))
 
             return response_ok()
         except:
@@ -53,7 +54,7 @@ def start():
 def waveshow():
     if request.method == 'POST':
         try:
-            data = m.waveshow(cached_pair)
+            data = main.waveshow(cached_pair)
             return f"data:image/png;base64,{data}"
         except:
             return response_error()
@@ -62,8 +63,16 @@ def waveshow():
 def specshow():
     if request.method == 'POST':
         try:
-            data = m.specshow(cached_pair)
+            data = main.specshow(cached_pair)
             return f"data:image/png;base64,{data}"
+        except:
+            return response_error()
+
+@app.route("/filter_list", methods=['GET'])
+def get_filter_list():
+    if request.method == 'GET':
+        try:
+            return filters.get_json_filter_list()
         except:
             return response_error()
 

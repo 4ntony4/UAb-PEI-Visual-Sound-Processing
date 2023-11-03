@@ -9,15 +9,18 @@ const dragArea = document.querySelector(".dragArea"),
       audioExample3 = $('#audioExample3'),
       mModal = $('#mModal'),
       mModalTitle = $('#mModalTitle'),
-      mModalMsg = $('#mModalMsg');
+      mModalMsg = $('#mModalMsg'),
+      mModalErr = $('#mModalErr');
       
 const lighterBackground = "lighter_background",
       dNone = "d-none",
+      active = "active",
       error = "Error",
       dragNDropText = "Drag & Drop to Upload File",
       audioSupportedText = "Only mpeg and wav files are supported.",
       fileMissingText = "File missing.",
-      serverErrorText = "Server Internal Error. Please try again later.";
+      serverErrorText = "Server Internal Error. Please try again later.",
+      somethingWentWrongText = "Something went wrong. Please try again later.";
 
 const optionsDiv = $('#optionsDiv'),
       waveBtn = $('#waveBtn'),
@@ -29,6 +32,21 @@ const optionsDiv = $('#optionsDiv'),
 let file;
 
 const ajax = {
+    get: (url, successCallback, errorCallback) => {
+        $.ajax({
+            type: "GET",
+            url: url,
+            success: (result) => {
+                if (successCallback) {
+                    successCallback(result);
+                }
+            },
+            error: (err) => {
+                if (errorCallback) errorCallback(err);
+                else showModalError(err);
+            }
+        });
+    },
     post: (url, data, successCallback, errorCallback) => {
         $.ajax({
             type: "POST",
@@ -42,12 +60,8 @@ const ajax = {
                 }
             },
             error: (err) => {
-                if (err.status == 500) {
-                    showModalServerError();
-                }
-                if (errorCallback) {
-                    errorCallback(err);
-                }
+                if (errorCallback) errorCallback(err);
+                else showModalError(err);
             }
         });
     }
@@ -107,7 +121,10 @@ function cacheAndShowAudioFile(file, fileURL) {
             showAudioTag(fileURL, file.name);
             start();
         },
-        () => spinnerArea.addClass(dNone)
+        (err) => {
+            spinnerArea.addClass(dNone);
+            showModalError(err);
+        }
     );
 }
 
@@ -120,9 +137,9 @@ function showAudioTag(fileURL, fileName) {
 
 function createAudioTag(fileURL, fileName) {
     return `
-        <h2 class="text-white text-center py-4">${fileName ? fileName : fileURL}</h2>
+        <h4 class="text-white text-center py-2">${fileName ? fileName : fileURL}</h4>
         <div class="d-flex justify-content-center">
-            <audio controls class="pb-4">
+            <audio controls class="pb-2">
                 <source id="audioSource" src="${fileURL}"/>
                 Your browser does not suppor the audio element.
             </audio>
@@ -162,6 +179,11 @@ function start() {
             staticSource,
             () => optionsDiv.removeClass(dNone)
         );
+
+        ajax.get(
+            "/filter_list",
+            (result) => fillFilterSelect(result)
+        );
     }
 }
 
@@ -175,6 +197,9 @@ waveBtn.click(() => {
     }
     waveImg.removeClass(dNone);
     specImg.addClass(dNone);
+
+    waveBtn.addClass(active);
+    specBtn.removeClass(active);
 });
 
 specBtn.click(() => {
@@ -187,6 +212,9 @@ specBtn.click(() => {
     }
     specImg.removeClass(dNone);
     waveImg.addClass(dNone);
+
+    specBtn.addClass(active);
+    waveBtn.removeClass(active);
 });
 
 function showModalAudioSupported() {
@@ -205,4 +233,40 @@ function showModalServerError() {
     mModalTitle.text(error);
     mModalMsg.text(serverErrorText);
     mModal.modal('show');
+}
+
+function showModalSomethingWentWrongError(err) {
+    mModalTitle.text(error);
+    mModalMsg.text(somethingWentWrongText);
+    mModalErr.text(err.status + ' (' + err.statusText + ')');
+    mModal.modal('show');
+}
+
+function showModalError(err) {
+    if (err.status == 500) {
+        showModalServerError();
+    } else {
+        showModalSomethingWentWrongError(err);
+    }
+}
+
+function fillFilterSelect(result) {
+	// webTools.ajaxGet('./asset?operation=get_vat_category_list').then(categories => {
+	// 	$('#txt_vat_category').empty();
+	// 	$('#txt_vat_category').append(new Option());
+	// 	categories.sort((a, b) => {
+	// 		let da = a.designation,
+	// 			db = b.designation;
+
+	// 		if (da < db) return -1;
+	// 		if (da > db) return 1;
+	// 		return 0;
+	// 	});
+	// 	categories.forEach(category => {
+	// 		const option = new Option(category.designation, category.code);
+	// 		$('#txt_vat_category').append(option);
+	// 	});
+	// 	$('#txt_vat_category').val($('#vat_category').val());
+	// });
+    console.log(result);
 }

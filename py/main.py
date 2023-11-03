@@ -37,7 +37,7 @@ def get_png_from_pyplot():
 def waveshow(pair):
     fig = plt.figure()
     librosa.display.waveshow(y = pair[0], sr=pair[1])
-    plt.suptitle("Waveform", fontsize=20)
+    plt.suptitle("Waveform", fontsize=20, y=0.965)
     plt.xlabel("Time (seconds)", fontsize=16)
     plt.ylabel("Amplitude", fontsize=16)
     fig.set_figwidth(fig.get_figheight()*2.7)
@@ -65,7 +65,7 @@ def specshow(pair):
 
     fig, ax = plt.subplots()
     img = librosa.display.specshow(S_db, x_axis='time', y_axis='linear', ax=ax)
-    plt.suptitle("Spectrogram", fontsize=22)
+    plt.suptitle("Spectrogram", fontsize=22, y=0.955)
     plt.xlabel("Time (seconds)", fontsize=18)
     plt.ylabel("Frequency (Hz)", fontsize=18)
     fig.colorbar(img, ax=ax, format="%+2.f dB")
