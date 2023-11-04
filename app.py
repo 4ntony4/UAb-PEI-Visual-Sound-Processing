@@ -76,4 +76,17 @@ def get_filter_list():
         except:
             return response_error()
 
+@app.route("/apply_filter", methods=['POST'])
+def apply_filter():
+    if request.method == 'POST':
+        try:
+            filter_code = request.data.decode()
+            result = filters.apply_filter(cached_pair[0], filter_code)
+
+            # data = main.specshow(cached_pair)
+            # return f"data:image/png;base64,{data}"
+            return response_ok()
+        except:
+            return response_error()
+
 app.run(host='0.0.0.0', port=5500, debug=True)

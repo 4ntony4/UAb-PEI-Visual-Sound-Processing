@@ -32,7 +32,7 @@ const optionsDiv = $('#optionsDiv'),
       applyFilterBtn = $('#applyFilterBtn');
 
 let file;
-let filterName;
+let filterCode;
 
 const ajax = {
     get: (url, successCallback, errorCallback) => {
@@ -274,12 +274,12 @@ function fillFilterSelect(filters) {
         selectFilter.append(option);
     });
 
-    filterName = selectFilter.val();
+    filterCode = selectFilter.val();
 }
 
 selectFilter.change(() => {
-    filterName = selectFilter.val();
-    if (filterName != "0") {
+    filterCode = selectFilter.val();
+    if (filterCode != "0") {
         applyFilterBtn.html(
             '<i class="fa-solid fa-bolt fa-beat"></i>'
             + ' Apply Filter '
@@ -290,4 +290,21 @@ selectFilter.change(() => {
         applyFilterBtn.html('Apply Filter');
         applyFilterBtn.attr('disabled', true);
     }
+});
+
+applyFilterBtn.click(() => {
+
+    ajax.post(
+        "/apply_filter",
+        filterCode
+        // (result) => specImg.attr('src', result)
+    );
+
+    // if (!specImg.attr('src')) {
+    // }
+    // specImg.removeClass(dNone);
+    // waveImg.addClass(dNone);
+
+    // specBtn.addClass(active);
+    // waveBtn.removeClass(active);
 });
