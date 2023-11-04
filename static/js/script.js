@@ -27,9 +27,12 @@ const optionsDiv = $('#optionsDiv'),
       specBtn = $('#specBtn'),
       imgDiv = $('#imgDiv'),
       waveImg = $('#waveImg'),
-      specImg = $('#specImg');
+      specImg = $('#specImg'),
+      selectFilter = $('#selectFilter'),
+      applyFilterBtn = $('#applyFilterBtn');
 
 let file;
+let filterName;
 
 const ajax = {
     get: (url, successCallback, errorCallback) => {
@@ -177,7 +180,10 @@ function start() {
         ajax.post(
             "/start",
             staticSource,
-            () => optionsDiv.removeClass(dNone)
+            () => {
+                optionsDiv.removeClass(dNone);
+                waveBtn.click();
+            }
         );
 
         ajax.get(
@@ -250,23 +256,38 @@ function showModalError(err) {
     }
 }
 
-function fillFilterSelect(result) {
-	// webTools.ajaxGet('./asset?operation=get_vat_category_list').then(categories => {
-	// 	$('#txt_vat_category').empty();
-	// 	$('#txt_vat_category').append(new Option());
-	// 	categories.sort((a, b) => {
-	// 		let da = a.designation,
-	// 			db = b.designation;
+function fillFilterSelect(filters) {
+    selectFilter.empty();
+    selectFilter.append(new Option('Select Filter', 0));
 
-	// 		if (da < db) return -1;
-	// 		if (da > db) return 1;
-	// 		return 0;
-	// 	});
-	// 	categories.forEach(category => {
-	// 		const option = new Option(category.designation, category.code);
-	// 		$('#txt_vat_category').append(option);
-	// 	});
-	// 	$('#txt_vat_category').val($('#vat_category').val());
-	// });
-    console.log(result);
+    filters.sort((a, b) => {
+        let sa = a.name,
+            sb = b.name;
+    
+        if (sa < sb) return -1;
+        if (sa > sb) return 1;
+        return 0;
+    });
+
+    filters.forEach(element => {
+        const option = new Option(element.name, element.code);
+        selectFilter.append(option);
+    });
+
+    filterName = selectFilter.val();
 }
+
+selectFilter.change(() => {
+    filterName = selectFilter.val();
+    if (filterName != "0") {
+        applyFilterBtn.html(
+            '<i class="fa-solid fa-bolt fa-beat"></i>'
+            + ' Apply Filter '
+            + '<i class="fa-solid fa-bolt fa-beat"></i>'
+            );
+        applyFilterBtn.attr('disabled', false);
+    } else {
+        applyFilterBtn.html('Apply Filter');
+        applyFilterBtn.attr('disabled', true);
+    }
+});

@@ -72,7 +72,7 @@ def specshow():
 def get_filter_list():
     if request.method == 'GET':
         try:
-            return filters.get_json_filter_list()
+            return filters.filter_dict_list
         except:
             return response_error()
 

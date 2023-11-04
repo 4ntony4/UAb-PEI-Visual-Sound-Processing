@@ -65,20 +65,11 @@
                         <div class="d-flex flex-column justify-content-center">
                             <button type="button" class="btn btn-outline-light m-1" id="waveBtn">Wave</button>
                             <button type="button" class="btn btn-outline-light m-1" id="specBtn">Spectrogram</button>
-                            <!-- <div class="dropdown d-flex flex-column">
-                                <button id="applyFilterDropdown" class="btn btn-outline-light m-1 dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Apply Filter
-                                </button>
-                                <ul class="dropdown-menu"> -->
-                                    <!-- <li><a id="audioExample1" class="dropdown-item" href="javascript:void(0)">Sine Wave: 440 Hz</a></li> -->
-                                <!-- </ul>
-                            </div> -->
-                            <select id="selectFilter" class="form-select m-1" aria-label="Select filter">
-                                <option selected>Select Filter</option>
-                                <!-- <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option> -->
-                              </select>
+                            <div class="container-fluid d-flex justify-content-center mt-5 mb-1">
+                                <i class="fa-solid fa-sliders fa-2xl whitish"></i>
+                            </div>
+                            <select id="selectFilter" class="form-select m-1" aria-label="Select filter"></select>
+                            <button type="button" class="btn btn-outline-light m-1" id="applyFilterBtn" disabled>Apply Filter</button>
                         </div>
                     </div>
                 </div>
