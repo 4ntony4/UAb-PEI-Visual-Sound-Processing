@@ -59,9 +59,13 @@ def amplitude_to_db(D):
 def db_to_amplitude(S_db):
     return librosa.db_to_amplitude(S_db)
 
-def specshow(pair):
-    D = stft(pair[0])
-    S_db = amplitude_to_db(D)
+def specshow(y):
+    if y.ndim == 1:
+        S_db = amplitude_to_db(stft(y))
+    elif y.ndim == 2:
+        S_db = amplitude_to_db(y)
+    else:
+        raise Exception
 
     fig, ax = plt.subplots()
     img = librosa.display.specshow(S_db, x_axis='time', y_axis='linear', ax=ax)

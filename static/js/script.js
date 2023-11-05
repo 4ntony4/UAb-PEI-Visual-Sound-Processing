@@ -296,7 +296,10 @@ applyFilterBtn.click(() => {
 
     ajax.post(
         "/apply_filter",
-        filterCode
+        filterCode,
+        (result) => {
+            $('#filteredSpecImg').attr('src', result);
+        }
         // (result) => specImg.attr('src', result)
     );
 

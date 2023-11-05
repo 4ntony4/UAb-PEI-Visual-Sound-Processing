@@ -37,14 +37,9 @@ def start():
     if request.method == 'POST':
         try:
             global cached_pair
-            
-            if len(request.data) == 0:
-                if cached_pair != ():
-                    print(main.get_info_pair(cached_pair))
 
-            else:
+            if len(request.data) != 0:
                 cached_pair = main.load(request.data.decode())
-                print(main.get_info_pair(cached_pair))
 
             return response_ok()
         except:
@@ -63,7 +58,7 @@ def waveshow():
 def specshow():
     if request.method == 'POST':
         try:
-            data = main.specshow(cached_pair)
+            data = main.specshow(cached_pair[0])
             return f"data:image/png;base64,{data}"
         except:
             return response_error()
@@ -82,10 +77,15 @@ def apply_filter():
         try:
             filter_code = request.data.decode()
             result = filters.apply_filter(cached_pair[0], filter_code)
-
-            # data = main.specshow(cached_pair)
-            # return f"data:image/png;base64,{data}"
-            return response_ok()
+            
+            # wave_data = main.waveshow((result, cached_pair[1]))
+            # wave_img = f"data:image/png;base64,{wave_data}"
+            
+            spec_data = main.specshow(result)
+            spec_img = f"data:image/png;base64,{spec_data}"
+            
+            # return [wave_img, spec_img]
+            return spec_img
         except:
             return response_error()
 
