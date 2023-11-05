@@ -37,10 +37,11 @@ def get_png_from_pyplot():
 def waveshow(pair):
     fig = plt.figure()
     librosa.display.waveshow(y = pair[0], sr=pair[1])
-    plt.suptitle("Waveform", fontsize=20, y=0.965)
-    plt.xlabel("Time (seconds)", fontsize=16)
-    plt.ylabel("Amplitude", fontsize=16)
-    fig.set_figwidth(fig.get_figheight()*2.7)
+    plt.suptitle("Waveform", fontsize=16, y=0.965)
+    plt.xlabel("Time (seconds)", fontsize=14)
+    plt.ylabel("Amplitude", fontsize=14)
+    plt.subplots_adjust(left=0.087, bottom=0.121, right=0.975, top=0.895)
+    fig.set_figwidth(fig.get_figheight()*2)
     return get_png_from_pyplot()
 
 # Short-time Fourier Transform (STFT)
@@ -69,11 +70,11 @@ def specshow(y):
 
     fig, ax = plt.subplots()
     img = librosa.display.specshow(S_db, x_axis='time', y_axis='linear', ax=ax)
-    plt.suptitle("Spectrogram", fontsize=22, y=0.955)
-    plt.xlabel("Time (seconds)", fontsize=18)
-    plt.ylabel("Frequency (Hz)", fontsize=18)
+    plt.suptitle("Spectrogram", fontsize=16, y=0.955)
+    plt.xlabel("Time (seconds)", fontsize=14)
+    plt.ylabel("Frequency (Hz)", fontsize=14)
     fig.colorbar(img, ax=ax, format="%+2.f dB")
-    fig.set_figwidth(15)
-    fig.set_figheight(8)
+    plt.subplots_adjust(left=0.096, bottom=0.12, right=1.04, top=0.88)
+    fig.set_figwidth(fig.get_figheight()*2)
 
     return get_png_from_pyplot()
