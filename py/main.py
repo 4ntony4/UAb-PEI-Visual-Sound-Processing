@@ -35,13 +35,22 @@ def get_png_from_pyplot():
     return img_b64
 
 def waveshow(pair):
+    if pair[0].ndim == 1:
+        y = pair[0]
+    elif pair[0].ndim == 2:
+        y = istft(pair[0])
+
+    else:
+        raise Exception
+    
     fig = plt.figure()
-    librosa.display.waveshow(y = pair[0], sr=pair[1])
+    librosa.display.waveshow(y=y, sr=pair[1])
     plt.suptitle("Waveform", fontsize=16, y=0.965)
     plt.xlabel("Time (seconds)", fontsize=14)
     plt.ylabel("Amplitude", fontsize=14)
     plt.subplots_adjust(left=0.087, bottom=0.121, right=0.975, top=0.895)
     fig.set_figwidth(fig.get_figheight()*2)
+    
     return get_png_from_pyplot()
 
 # Short-time Fourier Transform (STFT)

@@ -75,17 +75,37 @@ def get_filter_list():
 def apply_filter():
     if request.method == 'POST':
         try:
+            print("applying filter")
             filter_code = request.data.decode()
             result = filters.apply_filter(cached_pair[0], filter_code)
             
-            # wave_data = main.waveshow((result, cached_pair[1]))
-            # wave_img = f"data:image/png;base64,{wave_data}"
+            print("getting wave")
+            wave_data = main.waveshow((result, cached_pair[1]))
+            wave_img = f"data:image/png;base64,{wave_data}"
             
+            print("getting spec")
             spec_data = main.specshow(result)
             spec_img = f"data:image/png;base64,{spec_data}"
             
-            # return [wave_img, spec_img]
-            return spec_img
+            print("getting buf")
+            from scipy.io.wavfile import write
+            import io
+            import base64
+            buf = io.BytesIO()
+            write(buf, 22050, main.istft(result))
+
+            # import soundfile as sf
+            # sf.write(buf, main.istft(result), cached_pair[1])
+
+            print("getting base64")
+            audio_data = base64.b64encode(buf.getbuffer()).decode()
+            audio_src = f"data:audio/wav;base64,{audio_data}"
+
+            return {
+                'wave': wave_img,
+                'spec': spec_img,
+                'audio': audio_src
+            }
         except:
             return response_error()
 

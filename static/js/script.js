@@ -298,7 +298,11 @@ applyFilterBtn.click(() => {
         "/apply_filter",
         filterCode,
         (result) => {
-            $('#filteredSpecImg').attr('src', result);
+            $('#filteredWaveImg').attr('src', result.wave);
+            $('#filteredSpecImg').attr('src', result.spec);
+            // $('#filteredAudioSource').attr('src', result.audio);
+            $('#filteredAudioDiv').removeClass(dNone);
+            $('#filteredAudioDiv').html(createFilteredAudioTag(result.audio));
         }
         // (result) => specImg.attr('src', result)
     );
@@ -311,3 +315,12 @@ applyFilterBtn.click(() => {
     // specBtn.addClass(active);
     // waveBtn.removeClass(active);
 });
+
+function createFilteredAudioTag(audioSource) {
+    return `
+        <audio controls class="pb-2">
+            <source id="filteredAudioSource" src="${audioSource}"/>
+            Your browser does not suppor the audio element.
+        </audio>
+        `;
+}
