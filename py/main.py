@@ -5,6 +5,7 @@ import librosa
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+from scipy.io.wavfile import write
 
 matplotlib.use('agg')
 Pair = tuple[np.ndarray, float]
@@ -31,7 +32,7 @@ def get_png_from_pyplot():
     plt.close()
     # Convert BytesIO object to base64 string
     img_b64 = base64.b64encode(buf.getbuffer()).decode()
-
+    
     return img_b64
 
 def waveshow(pair):
@@ -39,7 +40,7 @@ def waveshow(pair):
         y = pair[0]
     elif pair[0].ndim == 2:
         y = istft(pair[0])
-
+        
     else:
         raise Exception
     
@@ -76,7 +77,7 @@ def specshow(y):
         S_db = amplitude_to_db(y)
     else:
         raise Exception
-
+    
     fig, ax = plt.subplots()
     img = librosa.display.specshow(S_db, x_axis='time', y_axis='linear', ax=ax)
     plt.suptitle("Spectrogram", fontsize=16, y=0.955)
@@ -85,5 +86,11 @@ def specshow(y):
     fig.colorbar(img, ax=ax, format="%+2.f dB")
     plt.subplots_adjust(left=0.096, bottom=0.12, right=1.04, top=0.88)
     fig.set_figwidth(fig.get_figheight()*2)
-
+    
     return get_png_from_pyplot()
+
+def get_wave_base64_from_ndarray(ndarray):
+    buf = io.BytesIO()
+    write(buf, 22050, istft(ndarray))
+    audio_data = base64.b64encode(buf.getbuffer()).decode()
+    return audio_data

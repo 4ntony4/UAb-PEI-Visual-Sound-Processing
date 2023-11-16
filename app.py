@@ -37,10 +37,10 @@ def start():
     if request.method == 'POST':
         try:
             global cached_pair
-
+            
             if len(request.data) != 0:
                 cached_pair = main.load(request.data.decode())
-
+                
             return response_ok()
         except:
             return response_error()
@@ -87,20 +87,10 @@ def apply_filter():
             spec_data = main.specshow(result)
             spec_img = f"data:image/png;base64,{spec_data}"
             
-            print("getting buf")
-            from scipy.io.wavfile import write
-            import io
-            import base64
-            buf = io.BytesIO()
-            write(buf, 22050, main.istft(result))
-
-            # import soundfile as sf
-            # sf.write(buf, main.istft(result), cached_pair[1])
-
-            print("getting base64")
-            audio_data = base64.b64encode(buf.getbuffer()).decode()
+            print("getting audio")
+            audio_data = main.get_wave_base64_from_ndarray(result)
             audio_src = f"data:audio/wav;base64,{audio_data}"
-
+            
             return {
                 'wave': wave_img,
                 'spec': spec_img,
