@@ -1,8 +1,11 @@
 const dragArea = document.querySelector(".dragArea"),
 	  dragInput = dragArea.querySelector("#audioFile"),
-	  spinnerArea = $('#spinnerArea'),
-	  spinnerArea2 = $('#spinnerArea2'),
-	  audioControlArea = $('#audioControlArea'),
+	  dragDiv = $('#dragDiv'),
+	  spinnerAreaDragDiv = $('#spinnerAreaDragDiv'),
+	  spinnerAreaBottom = $('#spinnerAreaBottom'),
+	  audioDiv = $('#audioDiv'),
+	  originalAudioDiv = $('#originalAudioDiv'),
+	  filteredAudioDiv = $('#filteredAudioDiv'),
 	  browseBtn = $('#browseBtn'),
 	  resetBtn = $('#resetBtn'),
 	  audioExample1 = $('#audioExample1'),
@@ -23,12 +26,15 @@ const lighterBackground = "lighter_background",
 	  serverErrorText = "Server Internal Error. Please try again later.",
 	  somethingWentWrongText = "Something went wrong. Please try again later.";
 
-const optionsDiv = $('#optionsDiv'),
+const mainDiv = $('#mainDiv'),
 	  waveBtn = $('#waveBtn'),
 	  specBtn = $('#specBtn'),
-	  imgDiv = $('#imgDiv'),
-	  waveImg = $('#waveImg'),
-	  specImg = $('#specImg'),
+	  waveImgDiv = $('#waveImgDiv'),
+	  specImgDiv = $('#specImgDiv'),
+	  originalWaveImg = $('#originalWaveImg'),
+	  filteredWaveImg = $('#filteredWaveImg'),
+	  originalSpecImg = $('#originalSpecImg'),
+	  filteredSpecImg = $('#filteredSpecImg'),
 	  selectFilter = $('#selectFilter'),
 	  applyFilterBtn = $('#applyFilterBtn');
 
@@ -103,7 +109,7 @@ function loadAudioFile() {
 		fileReader.onload = () => {
 			let fileURL = fileReader.result;
 			dragArea.classList.remove(lighterBackground);
-			spinnerArea.removeClass(dNone);
+			spinnerAreaDragDiv.removeClass(dNone);
 			cacheAndShowAudioFile(file, fileURL);
 		}
 		fileReader.readAsDataURL(file);
@@ -121,32 +127,30 @@ function cacheAndShowAudioFile(file, fileURL) {
 		"/cache_audio_file",
 		formData,
 		() => {
-			spinnerArea.addClass(dNone);
-			showAudioTag(fileURL, file.name);
+			spinnerAreaDragDiv.addClass(dNone);
+			showOriginalAudioTag(fileURL, file.name);
 			start();
 		},
 		(err) => {
-			spinnerArea.addClass(dNone);
+			spinnerAreaDragDiv.addClass(dNone);
 			showModalError(err);
 		}
 	);
 }
 
-function showAudioTag(fileURL, fileName) {
-	dragArea.classList.add(dNone);
-	$('#dragDiv').addClass(dNone);
-	// audioControlArea.removeClass(dNone);
-	$('#audioDiv').removeClass(dNone);
-	audioControlArea.html(createAudioTag(fileURL, fileName));
+function showOriginalAudioTag(fileURL, fileName) {
+	dragDiv.addClass(dNone);
+	audioDiv.removeClass(dNone);
+	originalAudioDiv.html(createOriginalAudioTag(fileURL, fileName));
 	start();
 }
 
-function createAudioTag(fileURL, fileName) {
+function createOriginalAudioTag(fileURL, fileName) {
 	return `
 		<h4 class="whitish text-center py-2">${fileName ? fileName : fileURL}</h4>
 		<div class="d-flex justify-content-center pb-2">
 			<audio controls>
-				<source id="audioSource" src="${fileURL}"/>
+				<source id="originalAudioSource" src="${fileURL}"/>
 				Your browser does not suppor the audio element.
 			</audio>
 		</div>
@@ -154,15 +158,15 @@ function createAudioTag(fileURL, fileName) {
 }
 
 audioExample1.click(() => {
-	showAudioTag("static/audio/440.wav", "Sine Wave: 440 Hz");
+	showOriginalAudioTag("static/audio/440.wav", "Sine Wave: 440 Hz");
 });
 
 audioExample2.click(() => {
-	showAudioTag("static/audio/acousticguitar_c_chord.mp3", "Acoustic Guitar: C Chord");
+	showOriginalAudioTag("static/audio/acousticguitar_c_chord.mp3", "Acoustic Guitar: C Chord");
 });
 
 audioExample3.click(() => {
-	showAudioTag("static/audio/solo_trumpet.mp3", "Solo Trumpet");
+	showOriginalAudioTag("static/audio/solo_trumpet.mp3", "Solo Trumpet");
 });
 
 resetBtn.click(() => {
@@ -170,12 +174,10 @@ resetBtn.click(() => {
 });
 
 function start() {
-	// if (audioControlArea.hasClass(dNone)) {
-	// 	showModalFileMissing();
-	if ($('#audioDiv').hasClass(dNone)) {
+	if (audioDiv.hasClass(dNone)) {
 		showModalFileMissing();
 	} else {
-		const source = $('#audioSource').attr('src');
+		const source = $('#originalAudioSource').attr('src');
 		let staticSource;
 
 		if (!source.startsWith("data")) {
@@ -186,7 +188,7 @@ function start() {
 			"/start",
 			staticSource,
 			() => {
-				optionsDiv.removeClass(dNone);
+				mainDiv.removeClass(dNone);
 				waveBtn.click();
 			}
 		);
@@ -199,30 +201,32 @@ function start() {
 }
 
 waveBtn.click(() => {
-	if (!waveImg.attr('src')) {
+	if (!originalWaveImg.attr('src')) {
 		ajax.post(
 			"/waveshow",
 			null,
-			(result) => waveImg.attr('src', result)
+			(result) => originalWaveImg.attr('src', result)
 		);
 	}
-	waveImg.removeClass(dNone);
-	specImg.addClass(dNone);
+
+	waveImgDiv.removeClass(dNone);
+	specImgDiv.addClass(dNone);
 
 	waveBtn.addClass(active);
 	specBtn.removeClass(active);
 });
 
 specBtn.click(() => {
-	if (!specImg.attr('src')) {
+	if (!originalSpecImg.attr('src')) {
 		ajax.post(
 			"/specshow",
 			null,
-			(result) => specImg.attr('src', result)
+			(result) => originalSpecImg.attr('src', result)
 		);
 	}
-	specImg.removeClass(dNone);
-	waveImg.addClass(dNone);
+
+	waveImgDiv.addClass(dNone);
+	specImgDiv.removeClass(dNone);
 
 	specBtn.addClass(active);
 	waveBtn.removeClass(active);
@@ -285,47 +289,34 @@ function fillFilterSelect(filters) {
 selectFilter.change(() => {
 	filterCode = selectFilter.val();
 	if (filterCode != "0") {
-		applyFilterBtn.html(
-			'<i class="fa-solid fa-bolt fa-beat"></i>'
-			+ ' Apply Filter '
-			+ '<i class="fa-solid fa-bolt fa-beat"></i>'
-		);
 		applyFilterBtn.attr('disabled', false);
+		applyFilterBtn.addClass(lighterBackground);
 	} else {
-		applyFilterBtn.html('Apply Filter');
 		applyFilterBtn.attr('disabled', true);
+		applyFilterBtn.removeClass(lighterBackground);
 	}
 });
 
 applyFilterBtn.click(() => {
-	spinnerArea2.removeClass(dNone);
+	spinnerAreaBottom.removeClass(dNone);
 
 	ajax.post(
 		"/apply_filter",
 		filterCode,
 		(result) => {
-			spinnerArea2.addClass(dNone);
-			$('#filteredWaveImg').attr('src', result.wave);
-			$('#filteredSpecImg').attr('src', result.spec);
-			$('#filteredDiv').removeClass(dNone);
-			$('#filteredAudioDiv').removeClass('disabled');
+			spinnerAreaBottom.addClass(dNone);
 			
-			// override div
-			$('#filteredAudioDiv').html(createFilteredAudioTag(result.audio));
+			filteredAudioDiv.removeClass('disabled');
+			filteredAudioDiv.html(createFilteredAudioTag(result.audio));
+			
+			filteredWaveImg.attr('src', result.wave);
+			filteredSpecImg.attr('src', result.spec);
 		},
 		(err) => {
-			spinnerArea2.addClass(dNone);
+			spinnerAreaBottom.addClass(dNone);
 			showModalError(err);
 		}
 	);
-
-	// if (!specImg.attr('src')) {
-	// }
-	// specImg.removeClass(dNone);
-	// waveImg.addClass(dNone);
-
-	// specBtn.addClass(active);
-	// waveBtn.removeClass(active);
 });
 
 function createFilteredAudioTag(audioSource) {

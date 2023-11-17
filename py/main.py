@@ -49,8 +49,12 @@ def waveshow(pair):
     plt.suptitle("Waveform", fontsize=16, y=0.965)
     plt.xlabel("Time (seconds)", fontsize=14)
     plt.ylabel("Amplitude", fontsize=14)
-    plt.subplots_adjust(left=0.087, bottom=0.121, right=0.975, top=0.895)
-    fig.set_figwidth(fig.get_figheight()*2)
+    # plt.subplots_adjust(left=0.079, bottom=0.112, right=0.975, top=0.895)
+    # fig.set_figheight(5.4)
+    # fig.set_figwidth(11)
+    
+    plt.subplots_adjust(left=0.062, bottom=0.12, right=0.974, top=0.898)
+    fig.set_figwidth(fig.get_figheight()*3)
     
     return get_png_from_pyplot()
 
@@ -84,9 +88,10 @@ def specshow(y):
     plt.xlabel("Time (seconds)", fontsize=14)
     plt.ylabel("Frequency (Hz)", fontsize=14)
     fig.colorbar(img, ax=ax, format="%+2.f dB")
-    plt.subplots_adjust(left=0.096, bottom=0.12, right=1.04, top=0.88)
-    fig.set_figwidth(fig.get_figheight()*2)
-    
+    plt.subplots_adjust(left=0.088, bottom=0.107, right=1.04, top=0.888)
+    fig.set_figheight(5.4)
+    fig.set_figwidth(11)
+
     return get_png_from_pyplot()
 
 def get_wave_base64_from_ndarray(ndarray):

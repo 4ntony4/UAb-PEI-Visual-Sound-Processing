@@ -6,6 +6,7 @@
 	--gray: #565e64;
 	--background: #5256ad;
 	--lighter_background: #6c6fae;
+	--darker-background: #3c3f7e;
 	--form-select-bg-img-white: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 	--form-select-bg-img-black: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23000' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
 }
@@ -38,16 +39,25 @@ body {
 	background: var(--lighter_background);
 }
 
-.mGrid3 {
+.darker_background {
+	background: var(--darker-background);
+	border-color: var(--darker-background);
+}
+
+.mGrid131 {
 	grid-template-columns: 1fr 3fr 1fr;
 }
 
-.mGrid2 {
+.mGrid15 {
 	grid-template-columns: 1fr 5fr;
 }
 
 .mGrid11 {
 	grid-template-columns: 1fr 1fr;
+}
+
+.mGrid141 {
+	grid-template-columns: 1fr 4fr 1fr;
 }
 
 .dragArea {
@@ -93,17 +103,17 @@ body {
 
 .form-select {
 	color: var(--whitish);
-	background: var(--background);
+	background: var(--darker-background);
 	background-image: var(--form-select-bg-img-white);
 	background-repeat: no-repeat;
 	background-position: right 0.75rem center;
 	background-size: 16px 12px;
-	border-color: var(--whitish);
+	border-color: var(--darker-background);
 	width: auto;
 }
 
 .form-select:focus {
-	border-color: var(--whitish);
+	border-color: var(--darker-background);
 	box-shadow: none;
 }
 
