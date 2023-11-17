@@ -134,16 +134,18 @@ function cacheAndShowAudioFile(file, fileURL) {
 
 function showAudioTag(fileURL, fileName) {
 	dragArea.classList.add(dNone);
-	audioControlArea.removeClass(dNone);
+	$('#dragDiv').addClass(dNone);
+	// audioControlArea.removeClass(dNone);
+	$('#audioDiv').removeClass(dNone);
 	audioControlArea.html(createAudioTag(fileURL, fileName));
 	start();
 }
 
 function createAudioTag(fileURL, fileName) {
 	return `
-		<h4 class="text-white text-center py-2">${fileName ? fileName : fileURL}</h4>
-		<div class="d-flex justify-content-center">
-			<audio controls class="pb-2">
+		<h4 class="whitish text-center py-2">${fileName ? fileName : fileURL}</h4>
+		<div class="d-flex justify-content-center pb-2">
+			<audio controls>
 				<source id="audioSource" src="${fileURL}"/>
 				Your browser does not suppor the audio element.
 			</audio>
@@ -168,7 +170,9 @@ resetBtn.click(() => {
 });
 
 function start() {
-	if (audioControlArea.hasClass(dNone)) {
+	// if (audioControlArea.hasClass(dNone)) {
+	// 	showModalFileMissing();
+	if ($('#audioDiv').hasClass(dNone)) {
 		showModalFileMissing();
 	} else {
 		const source = $('#audioSource').attr('src');
@@ -304,6 +308,9 @@ applyFilterBtn.click(() => {
 			$('#filteredWaveImg').attr('src', result.wave);
 			$('#filteredSpecImg').attr('src', result.spec);
 			$('#filteredDiv').removeClass(dNone);
+			$('#filteredAudioDiv').removeClass('disabled');
+			
+			// override div
 			$('#filteredAudioDiv').html(createFilteredAudioTag(result.audio));
 		},
 		(err) => {
@@ -323,9 +330,9 @@ applyFilterBtn.click(() => {
 
 function createFilteredAudioTag(audioSource) {
 	return `
-	<h4 class="text-white text-center py-2">Filtered Sound</h4>
-	<div class="d-flex justify-content-center">
-		<audio controls class="pb-2">
+	<h4 class="whitish text-center py-2">Filtered Sound</h4>
+	<div class="d-flex justify-content-center pb-2">
+		<audio controls>
 			<source id="filteredAudioSource" src="${audioSource}"/>
 			Your browser does not suppor the audio element.
 		</audio>

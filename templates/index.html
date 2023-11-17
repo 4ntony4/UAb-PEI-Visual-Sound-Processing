@@ -25,7 +25,7 @@
 			</div>
 		</header>
 
-		<div class="container-fluid pb-3">
+		<div id="dragDiv" class="container-fluid pb-3">
 			<div class="d-grid gap-3 mGrid3">
 				<div></div>
 				<div class="border rounded-3">
@@ -57,20 +57,38 @@
 							<span class="sr-only">Loading...</span>
 						</div>
 					</div>
-					<div id="audioControlArea" class="d-none lighter_background"></div>
+					<!-- <div id="audioControlArea" class="d-none lighter_background"></div> -->
 				</div>
 				<div></div>
 			</div>
 		</div>
 
+		<div id="audioDiv" class="d-none container-fluid pb-3 pt-1">
+			<div class="d-grid gap-3 mGrid11">
+				<div id="audioControlArea" class="lighter_background"></div>
+				<div class="lighter_background">
+					<div id="filteredAudioDiv" class="disabled">
+						<h4 class="whitish text-center py-2">Filtered Sound</h4>
+						<div class="d-flex justify-content-center pb-2">
+							<audio controls>
+								<source id="filteredAudioSource" />
+								Your browser does not suppor the audio element.
+							</audio>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<div class="container-fluid pb-3">
 			<div class="d-grid mGrid2">
+				<!-- <div class="lighter_background"> -->
 				<div>
 					<div id="optionsDiv" class="container-fluid d-none">
-						<div class="d-flex flex-column justify-content-center">
+						<div class="p-2 d-flex flex-column justify-content-center">
 							<button type="button" class="btn btn-outline-light m-1" id="waveBtn">Wave View</button>
 							<button type="button" class="btn btn-outline-light m-1" id="specBtn">Spectrogram View</button>
-							<div class="container-fluid d-flex justify-content-center mt-5 mb-1">
+							<div class="container-fluid d-flex justify-content-center mt-4 mb-1">
 								<i class="fa-solid fa-sliders fa-2xl whitish"></i>
 							</div>
 							<select id="selectFilter" class="form-select m-1" aria-label="Select filter"></select>
@@ -98,7 +116,7 @@
 			</div>
 		</div>
 
-		<div id="filteredDiv" class="d-none container-fluid pb-3">
+		<!-- <div id="filteredDiv" class="d-none container-fluid pb-3">
 			<div class="d-grid gap-3 mGrid3">
 				<div></div>
 				<div class="border rounded-3">
@@ -106,7 +124,15 @@
 				</div>
 				<div></div>
 			</div>
-		</div>
+		</div> -->
+		<!-- <div id="filteredDiv" class="container-fluid pb-3">
+			<div class="d-grid gap-3 mGrid11">
+				<div></div>
+				<div class="border rounded-3">
+					<div id="filteredAudioDiv" class="lighter_background"></div>
+				</div>
+			</div>
+		</div> -->
 
 		<!-- <div class="container-fluid pb-3">
 			<div class="d-grid mGrid2">

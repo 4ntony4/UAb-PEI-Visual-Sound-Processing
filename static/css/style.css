@@ -29,6 +29,11 @@ body {
 	color: var(--blackish);
 }
 
+.disabled {
+	color: var(--whitish);
+	opacity: 0.25;
+}
+
 .lighter_background {
 	background: var(--lighter_background);
 }
@@ -39,6 +44,10 @@ body {
 
 .mGrid2 {
 	grid-template-columns: 1fr 5fr;
+}
+
+.mGrid11 {
+	grid-template-columns: 1fr 1fr;
 }
 
 .dragArea {
