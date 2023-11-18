@@ -9,6 +9,11 @@ _kernel = 'kernel'
 
 filter_dict_list = [
     {
+        _name: 'Median',
+        _code: 'MDN',
+        _kernel: None
+    },
+    {
         _name: 'Sharpen',
         _code: 'SHP',
         _kernel: kernels.sharpen.tolist()
@@ -28,16 +33,16 @@ filter_dict_list = [
         _code: 'GB3',
         _kernel: kernels.gaussian_blur_3x3.tolist()
     },
-    {
-        _name: 'Gaussian Blur 5x5',
-        _code: 'GB5',
-        _kernel: kernels.gaussian_blur_5x5.tolist()
-    },
-    {
-        _name: 'Gaussian Blur 7x7',
-        _code: 'GB7',
-        _kernel: kernels.gaussian_blur_7x7.tolist()
-    },
+    # {
+    #     _name: 'Gaussian Blur 5x5',
+    #     _code: 'GB5',
+    #     _kernel: kernels.gaussian_blur_5x5.tolist()
+    # },
+    # {
+    #     _name: 'Gaussian Blur 7x7',
+    #     _code: 'GB7',
+    #     _kernel: kernels.gaussian_blur_7x7.tolist()
+    # },
     {
         _name: 'Laplacian 1',
         _code: 'LP1',
@@ -77,15 +82,17 @@ def apply_filter(y, code):
             D = main.stft(y)
             return convolution_filter(D, np.array(item[_kernel]))
         else:
-            error_message = "Kernel doesn't exist"
-            print(error_message)
-            raise Exception
+            if item[_code] == 'MDN':
+                D = main.stft(y)
+                return median_filter(D)
+            else:
+                error_message = "Filter doesn't exist"
+                print(error_message)
+                raise Exception
     else:
         error_message = "Filter doesn't exist"
         print(error_message)
         raise Exception
-    
-    return 0
 
 def get_kernel_from_code(code):
     for item in filter_dict_list:
