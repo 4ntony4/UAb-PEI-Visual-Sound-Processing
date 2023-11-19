@@ -87,12 +87,10 @@ def apply_filter(y, code):
                 return median_filter(D)
             else:
                 error_message = "Filter doesn't exist"
-                print(error_message)
-                raise Exception
+                raise Exception(error_message)
     else:
         error_message = "Filter doesn't exist"
-        print(error_message)
-        raise Exception
+        raise Exception(error_message)
 
 def get_kernel_from_code(code):
     for item in filter_dict_list:
@@ -100,31 +98,39 @@ def get_kernel_from_code(code):
             return item
     return None
 
-def neighborhood_3x3(matrix_2D,i,j):
-    return np.array([
-        [matrix_2D[i-1,j-1], matrix_2D[i-1,j], matrix_2D[i-1,j+1]],
-        [matrix_2D[i,j-1], matrix_2D[i,j], matrix_2D[i,j+1]],
-        [matrix_2D[i+1,j-1], matrix_2D[i+1,j], matrix_2D[i+1,j+1]],
-        ], dtype=matrix_2D.dtype)
+def neighborhood(matrix_2D,row,column,neighborhood_matrix_size=3):
+    size = neighborhood_matrix_size
 
-def median_filter(matrix_2D, padding_mode='constant'):
+    if size % 2 == 0 or size < 3:
+        error_message = "Argument size must be an odd number greater than or equal to 3"
+        raise Exception(error_message)
+    
+    matrix = np.zeros((size, size), dtype=matrix_2D.dtype)
+    offset = int(np.floor(size / 2))
+
+    for i in range(size):
+        for j in range(size):
+            matrix[i, j] = matrix_2D[row + i - offset, column + j - offset]
+    
+    return matrix
+
+def median_filter(matrix_2D, neighborhood_matrix_size=3, padding_mode='constant'):
     if padding_mode != 'constant':
         error_message = "Padding mode not implemented"
-        print(error_message)
-        raise Exception
+        raise Exception(error_message)
     
-    padding_matrix = padding.add_constant(matrix_2D)
+    n_padding_lines = int(np.floor(neighborhood_matrix_size / 2))
+
+    padding_matrix = padding.add_constant(matrix_2D, padding_size=n_padding_lines, fill_value=0)
     
     rows, columns = (matrix_2D.shape[0], matrix_2D.shape[1])
     filtered_matrix = np.zeros((rows, columns), dtype=matrix_2D.dtype)
     
-    n_padding = 1
-    
     ###
-    for i in range (n_padding, len(padding_matrix) - n_padding):
-        for j in range (n_padding, len(padding_matrix[i]) - n_padding):
-            matrix_region = neighborhood_3x3(padding_matrix,i,j)
-            filtered_matrix[i-n_padding, j-n_padding] = np.median(matrix_region)
+    for i in range (n_padding_lines, len(padding_matrix) - n_padding_lines):
+        for j in range (n_padding_lines, len(padding_matrix[i]) - n_padding_lines):
+            matrix_region = neighborhood(padding_matrix, i, j, neighborhood_matrix_size)
+            filtered_matrix[i - n_padding_lines, j - n_padding_lines] = np.median(matrix_region)
     ###
     
     return filtered_matrix
@@ -132,21 +138,20 @@ def median_filter(matrix_2D, padding_mode='constant'):
 def convolution_filter(matrix_2D, kernel, padding_mode='reflect'):
     if padding_mode != 'reflect':
         error_message = "Padding mode not implemented"
-        print(error_message)
-        raise Exception
+        raise Exception(error_message)
     
-    padding_matrix = padding.add_reflect(matrix_2D)
+    n_padding_lines = int(np.floor(kernel.shape[0] / 2))
+
+    padding_matrix = padding.add_reflect(matrix_2D, padding_size=n_padding_lines)
     
     rows, columns = (matrix_2D.shape[0], matrix_2D.shape[1])
     filtered_matrix = np.zeros((rows, columns), dtype=matrix_2D.dtype)
     
-    n_padding = 1
-    
     ###
-    for i in range (n_padding, len(padding_matrix) - n_padding):
-        for j in range (n_padding, len(padding_matrix[i]) - n_padding):
-            matrix_region = neighborhood_3x3(padding_matrix,i,j)
-            filtered_matrix[i-n_padding, j-n_padding] = convolve_2D(matrix_region, kernel)
+    for i in range (n_padding_lines, len(padding_matrix) - n_padding_lines):
+        for j in range (n_padding_lines, len(padding_matrix[i]) - n_padding_lines):
+            matrix_region = neighborhood(padding_matrix, i, j, kernel.shape[0])
+            filtered_matrix[i - n_padding_lines, j - n_padding_lines] = convolve_2D(matrix_region, kernel)
     ###
     
     return filtered_matrix
