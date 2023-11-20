@@ -5,7 +5,7 @@ import librosa
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.io.wavfile import write
+import IPython.display as ipd
 
 matplotlib.use('agg')
 Pair = tuple[np.ndarray, float]
@@ -95,7 +95,6 @@ def specshow(y):
     return get_png_from_pyplot()
 
 def get_wave_base64_from_ndarray(ndarray):
-    buf = io.BytesIO()
-    write(buf, 22050, istft(ndarray))
-    audio_data = base64.b64encode(buf.getbuffer()).decode()
+    val = ipd.Audio._make_wav(istft(ndarray), rate=22050, normalize=True)
+    audio_data = base64.b64encode(val).decode()
     return audio_data
