@@ -135,14 +135,14 @@ def median_filter(matrix_2D, neighborhood_matrix_size=3, padding_mode='constant'
     
     return filtered_matrix
 
-def convolution_filter(matrix_2D, kernel, padding_mode='reflect'):
-    if padding_mode != 'reflect':
+def convolution_filter(matrix_2D, kernel, padding_mode='nearest'):
+    if padding_mode != 'nearest':
         error_message = "Padding mode not implemented"
         raise Exception(error_message)
     
     n_padding_lines = int(np.floor(kernel.shape[0] / 2))
 
-    padding_matrix = padding.add_reflect(matrix_2D, padding_size=n_padding_lines)
+    padding_matrix = padding.add_nearest(matrix_2D, padding_size=n_padding_lines)
     
     rows, columns = (matrix_2D.shape[0], matrix_2D.shape[1])
     filtered_matrix = np.zeros((rows, columns), dtype=matrix_2D.dtype)

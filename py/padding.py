@@ -18,7 +18,7 @@ def add_constant(matrix_2D, padding_size=1, fill_value=0):
     
     return new_matrix
 
-def add_reflect(matrix_2D, padding_size=1):
+def add_nearest(matrix_2D, padding_size=1):
     if padding_size < 1:
         error_message = "Argument padding_size must be an integer greater than or equal to 1"
         raise Exception(error_message)
