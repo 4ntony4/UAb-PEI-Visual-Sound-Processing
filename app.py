@@ -99,4 +99,47 @@ def apply_filter():
         except:
             return response_error()
 
+@app.route("/custom_kernel", methods=['POST'])
+def custom_kernel():
+    if request.method == 'POST':
+        try:
+            if (request.data):
+                jdata = request.get_json()
+                print(jdata)
+                print(type(jdata))
+
+            # data = request.data.decode()
+            # print(data)
+            # print(type(data))
+
+            # form = request.form
+            # print(form)
+            # print(request.form)
+            # print(request.json)
+
+            # print("applying filter")
+            # filter_code = request.data.decode()
+            # result = filters.apply_filter(cached_pair[0], filter_code)
+            
+            # print("getting wave")
+            # wave_data = main.waveshow((result, cached_pair[1]))
+            # wave_img = f"data:image/png;base64,{wave_data}"
+            
+            # print("getting spec")
+            # spec_data = main.specshow(result)
+            # spec_img = f"data:image/png;base64,{spec_data}"
+            
+            # print("getting audio")
+            # audio_data = main.get_wave_base64_from_ndarray(result)
+            # audio_src = f"data:audio/wav;base64,{audio_data}"
+            
+            # return {
+            #     'wave': wave_img,
+            #     'spec': spec_img,
+            #     'audio': audio_src
+            # }
+            return response_ok()
+        except:
+            return response_error()
+
 app.run(host='0.0.0.0', port=5500, debug=True)

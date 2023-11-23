@@ -56,6 +56,10 @@ body {
 	grid-template-columns: 1fr 1fr;
 }
 
+.mGrid111 {
+	grid-template-columns: 1fr 1fr 1fr;
+}
+
 .mGrid141 {
 	grid-template-columns: 1fr 4fr 1fr;
 }
@@ -129,4 +133,8 @@ body {
 	border-color: var(--whitish);
 	background-image: var(--form-select-bg-img-black);
 	cursor: pointer;
+}
+
+.form-control {
+	text-align: center;
 }

@@ -39,7 +39,9 @@ const mainDiv = $('#mainDiv'),
 	  applyFilterBtn = $('#applyFilterBtn');
 
 let file;
-let filterCode;
+let filters;
+let currentFilterCode;
+let currentFilterKernel = null;
 
 const ajax = {
 	get: (url, successCallback, errorCallback) => {
@@ -126,7 +128,7 @@ function cacheAndShowAudioFile(file, fileURL) {
 	ajax.post(
 		"/cache_audio_file",
 		formData,
-		() => {
+		(_) => {
 			spinnerAreaDragDiv.addClass(dNone);
 			showOriginalAudioTag(fileURL, file.name);
 			start();
@@ -187,7 +189,7 @@ function start() {
 		ajax.post(
 			"/start",
 			staticSource,
-			() => {
+			(_) => {
 				mainDiv.removeClass(dNone);
 				waveBtn.click();
 			}
@@ -195,7 +197,18 @@ function start() {
 
 		ajax.get(
 			"/filter_list",
-			(result) => fillFilterSelect(result)
+			(result) => {
+				filters = result;
+				filters.sort((a, b) => {
+					let sa = a.name,
+						sb = b.name;
+			
+					if (sa < sb) return -1;
+					if (sa > sb) return 1;
+					return 0;
+				});
+				fillFilterSelect();
+			}
 		);
 	}
 }
@@ -265,44 +278,59 @@ function showModalError(err) {
 	}
 }
 
-function fillFilterSelect(filters) {
+function fillFilterSelect() {
 	selectFilter.empty();
 	selectFilter.append(new Option('Select Filter', 0));
-
-	filters.sort((a, b) => {
-		let sa = a.name,
-			sb = b.name;
-
-		if (sa < sb) return -1;
-		if (sa > sb) return 1;
-		return 0;
-	});
 
 	filters.forEach(element => {
 		const option = new Option(element.name, element.code);
 		selectFilter.append(option);
 	});
 
-	filterCode = selectFilter.val();
+	currentFilterCode = selectFilter.val();
 }
 
 selectFilter.change(() => {
-	filterCode = selectFilter.val();
-	if (filterCode != "0") {
+	currentFilterCode = selectFilter.val();
+
+	if (currentFilterCode != "0") {
 		applyFilterBtn.attr('disabled', false);
 		applyFilterBtn.addClass(lighterBackground);
 	} else {
 		applyFilterBtn.attr('disabled', true);
 		applyFilterBtn.removeClass(lighterBackground);
 	}
+
+	const currentFilter = filters.find((element) => element.code == currentFilterCode);
+	if (currentFilter) currentFilterKernel = currentFilter.kernel;
+	else currentFilterKernel = null;
+	fillKernelForm();
 });
+
+function fillKernelForm() {
+	if (currentFilterKernel && currentFilterKernel.length == 3) {
+		for (let i = 0; i < 3; i++) {
+			for (let j = 0; j < 3; j++) {
+				let value = currentFilterKernel[i][j];
+				if (!Number.isInteger(value)) value = getFraction(value);
+				$(`#kernel${i}${j}`).val(value);
+			}
+		}
+	} else {
+		for (let i = 0; i < 3; i++) {
+			for (let j = 0; j < 3; j++) {
+				$(`#kernel${i}${j}`).val("");
+			}
+		}
+	}
+}
 
 applyFilterBtn.click(() => {
 	spinnerAreaBottom.removeClass(dNone);
 
 	ajax.post(
 		"/apply_filter",
-		filterCode,
+		currentFilterCode,
 		(result) => {
 			spinnerAreaBottom.addClass(dNone);
 			
@@ -329,4 +357,46 @@ function createFilteredAudioTag(audioSource) {
 		</audio>
 	</div>
 	`;
+}
+
+$('#someBtn').click(() => {
+	const form = document.querySelector('form');
+	const data = Object.fromEntries(new FormData(form).entries());
+
+	$.ajax({
+		type: "POST",
+		url: "/custom_kernel",
+		data: JSON.stringify(data),
+		contentType: "application/json; charset=utf-8",
+		success: (result) => {
+			// if (successCallback) {
+			// 	successCallback(result);
+			// }
+		},
+		error: (err) => {
+			// if (errorCallback) errorCallback(err);
+			// else showModalError(err);
+		}
+	});
+});
+
+
+// https://stackoverflow.com/questions/23575218/convert-decimal-number-to-fraction-in-javascript-or-closest-fraction
+function gcd(a, b) {
+	// Since there is a limited precision we need to limit the value.
+	if (b < 0.0000001) return a;
+
+	// Discard any fractions due to limitations in precision.
+	return gcd(b, Math.floor(a % b));
+}
+function getFraction(decimal) {
+	const len = decimal.toString().length - 2;
+	let denominator = Math.pow(10, len);
+	let numerator = decimal * denominator;
+	const divisor = gcd(numerator, denominator);
+
+	numerator /= divisor;
+	denominator /= divisor;
+
+	return Math.floor(numerator) + '/' + Math.floor(denominator);
 }
