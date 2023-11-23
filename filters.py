@@ -1,6 +1,6 @@
-import py.kernels as kernels
-import py.padding as padding
-import py.main as main
+import kernels
+import padding
+import main
 import numpy as np
 
 _name = 'name'

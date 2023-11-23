@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, make_response, render_template, request
 
-import py.main as main
-import py.filters as filters
+import main
+import filters
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
@@ -116,4 +116,4 @@ def get_wave_spec_audio(result):
         'audio': audio_src
     }
 
-app.run(host='0.0.0.0', port=5500, debug=True)
+app.run(host='0.0.0.0', port=5500, debug=False)
