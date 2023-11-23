@@ -143,10 +143,12 @@ function cacheAndShowAudioFile(file, fileURL) {
 }
 
 function showOriginalAudioTag(fileURL, fileName) {
+	spinnerFooter.removeClass(dNone);
 	dragDiv.addClass(dNone);
 	audioDiv.removeClass(dNone);
 	originalAudioDiv.html(createOriginalAudioTag(fileURL, fileName));
 	start();
+	spinnerFooter.addClass(dNone);
 }
 
 function createOriginalAudioTag(fileURL, fileName) {
