@@ -116,4 +116,4 @@ def get_wave_spec_audio(result):
         'audio': audio_src
     }
 
-app.run(host='0.0.0.0', port=5500, debug=False)
+app.run(host='0.0.0.0', port=5500, debug=True)

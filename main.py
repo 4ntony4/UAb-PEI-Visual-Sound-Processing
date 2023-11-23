@@ -36,9 +36,11 @@ def get_png_from_pyplot():
     return img_b64
 
 def waveshow(pair):
+    title = "Waveform"
     if pair[0].ndim == 1:
         y = pair[0]
     elif pair[0].ndim == 2:
+        title = "Filtered Waveform"
         y = istft(pair[0])
         
     else:
@@ -46,12 +48,9 @@ def waveshow(pair):
     
     fig = plt.figure()
     librosa.display.waveshow(y=y, sr=pair[1])
-    plt.suptitle("Waveform", fontsize=16, y=0.965)
+    plt.suptitle(title, fontsize=16, y=0.965)
     plt.xlabel("Time (seconds)", fontsize=14)
     plt.ylabel("Amplitude", fontsize=14)
-    # plt.subplots_adjust(left=0.079, bottom=0.112, right=0.975, top=0.895)
-    # fig.set_figheight(5.4)
-    # fig.set_figwidth(11)
     
     plt.subplots_adjust(left=0.062, bottom=0.12, right=0.974, top=0.898)
     fig.set_figwidth(fig.get_figheight()*3)
@@ -75,16 +74,18 @@ def db_to_amplitude(S_db):
     return librosa.db_to_amplitude(S_db)
 
 def specshow(y):
+    title = "Spectrogram"
     if y.ndim == 1:
         S_db = amplitude_to_db(stft(y))
     elif y.ndim == 2:
         S_db = amplitude_to_db(y)
+        title = "Filtered Spectrogram"
     else:
         raise Exception
     
     fig, ax = plt.subplots()
     img = librosa.display.specshow(S_db, x_axis='time', y_axis='linear', ax=ax)
-    plt.suptitle("Spectrogram", fontsize=16, y=0.955)
+    plt.suptitle(title, fontsize=16, y=0.955)
     plt.xlabel("Time (seconds)", fontsize=14)
     plt.ylabel("Frequency (Hz)", fontsize=14)
     fig.colorbar(img, ax=ax, format="%+2.f dB")

@@ -3,6 +3,7 @@ const dragArea = document.querySelector(".dragArea"),
 	  dragDiv = $('#dragDiv'),
 	  spinnerAreaDragDiv = $('#spinnerAreaDragDiv'),
 	  spinnerAreaBottom = $('#spinnerAreaBottom'),
+	  spinnerFooter = $('#spinnerFooter'),
 	  audioDiv = $('#audioDiv'),
 	  originalAudioDiv = $('#originalAudioDiv'),
 	  filteredAudioDiv = $('#filteredAudioDiv'),
@@ -36,7 +37,7 @@ const mainDiv = $('#mainDiv'),
 	  originalSpecImg = $('#originalSpecImg'),
 	  filteredSpecImg = $('#filteredSpecImg'),
 	  selectFilter = $('#selectFilter'),
-	  applyFilterBtn = $('#applyFilterBtn');
+	  applyFilterBtn = $('#applyFilterBtn'),
 	  changeKernelBtn = $('#changeKernelBtn');
 
 let file;
@@ -180,6 +181,8 @@ function start() {
 	if (audioDiv.hasClass(dNone)) {
 		showModalFileMissing();
 	} else {
+		spinnerFooter.removeClass(dNone);
+
 		const source = $('#originalAudioSource').attr('src');
 		let staticSource;
 
@@ -209,6 +212,7 @@ function start() {
 					return 0;
 				});
 				fillFilterSelect();
+				spinnerFooter.addClass(dNone);
 			}
 		);
 	}
@@ -216,10 +220,14 @@ function start() {
 
 waveBtn.click(() => {
 	if (!originalWaveImg.attr('src')) {
+		spinnerFooter.removeClass(dNone);
 		ajax.post(
 			"/waveshow",
 			null,
-			(result) => originalWaveImg.attr('src', result)
+			(result) => {
+				originalWaveImg.attr('src', result);
+				spinnerFooter.addClass(dNone);
+			}
 		);
 	}
 
@@ -232,10 +240,14 @@ waveBtn.click(() => {
 
 specBtn.click(() => {
 	if (!originalSpecImg.attr('src')) {
+		spinnerFooter.removeClass(dNone);
 		ajax.post(
 			"/specshow",
 			null,
-			(result) => originalSpecImg.attr('src', result)
+			(result) => {
+				originalSpecImg.attr('src', result);
+				spinnerFooter.addClass(dNone);
+			}
 		);
 	}
 
