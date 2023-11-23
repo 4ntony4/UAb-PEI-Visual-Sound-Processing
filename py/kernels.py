@@ -1,5 +1,11 @@
 import numpy as np
 
+identity = np.array([
+    [ 0, 0, 0],
+    [ 0, 1, 0],
+    [ 0, 0, 0]
+])
+
 # sharpening filter
 sharpen = np.array([
     [  0, -1,  0],

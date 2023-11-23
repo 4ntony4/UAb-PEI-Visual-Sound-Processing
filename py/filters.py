@@ -9,6 +9,11 @@ _kernel = 'kernel'
 
 filter_dict_list = [
     {
+        _name: 'Custom Kernel 3x3',
+        _code: 'CK3',
+        _kernel: kernels.identity.tolist()
+    },
+    {
         _name: 'Median',
         _code: 'MDN',
         _kernel: None
@@ -91,6 +96,10 @@ def apply_filter(y, code):
     else:
         error_message = "Filter doesn't exist"
         raise Exception(error_message)
+
+def apply_custom_kernel(y, kernel):
+    D = main.stft(y)
+    return convolution_filter(D, np.array(kernel))
 
 def get_kernel_from_code(code):
     for item in filter_dict_list:

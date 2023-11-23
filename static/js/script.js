@@ -37,6 +37,7 @@ const mainDiv = $('#mainDiv'),
 	  filteredSpecImg = $('#filteredSpecImg'),
 	  selectFilter = $('#selectFilter'),
 	  applyFilterBtn = $('#applyFilterBtn');
+	  changeKernelBtn = $('#changeKernelBtn');
 
 let file;
 let filters;
@@ -309,17 +310,23 @@ selectFilter.change(() => {
 
 function fillKernelForm() {
 	if (currentFilterKernel && currentFilterKernel.length == 3) {
+		if (currentFilterCode != 'CK3') changeKernelBtn.removeClass(dNone);
+		else changeKernelBtn.addClass(dNone);
+
 		for (let i = 0; i < 3; i++) {
 			for (let j = 0; j < 3; j++) {
-				let value = currentFilterKernel[i][j];
-				if (!Number.isInteger(value)) value = getFraction(value);
-				$(`#kernel${i}${j}`).val(value);
+				$(`#kernel${i}${j}`).val(currentFilterKernel[i][j]);
+				if (currentFilterCode == 'CK3') $(`#kernel${i}${j}`).attr('disabled', false);
+				else $(`#kernel${i}${j}`).attr('disabled', true);
 			}
 		}
 	} else {
+		changeKernelBtn.addClass(dNone);
+
 		for (let i = 0; i < 3; i++) {
 			for (let j = 0; j < 3; j++) {
 				$(`#kernel${i}${j}`).val("");
+				$(`#kernel${i}${j}`).attr('disabled', true);
 			}
 		}
 	}
@@ -328,24 +335,44 @@ function fillKernelForm() {
 applyFilterBtn.click(() => {
 	spinnerAreaBottom.removeClass(dNone);
 
-	ajax.post(
-		"/apply_filter",
-		currentFilterCode,
-		(result) => {
-			spinnerAreaBottom.addClass(dNone);
-			
-			filteredAudioDiv.removeClass('disabled');
-			filteredAudioDiv.html(createFilteredAudioTag(result.audio));
-			
-			filteredWaveImg.attr('src', result.wave);
-			filteredSpecImg.attr('src', result.spec);
-		},
-		(err) => {
-			spinnerAreaBottom.addClass(dNone);
-			showModalError(err);
+	if (currentFilterCode == 'CK3') {
+		for (let i = 0; i < 3; i++) {
+			for (let j = 0; j < 3; j++) {
+				currentFilterKernel[i][j] = parseFloat($(`#kernel${i}${j}`).val());
+			}
 		}
-	);
+		$.ajax({
+			type: "POST",
+			url: "/apply_custom_kernel",
+			data: JSON.stringify(currentFilterKernel),
+			contentType: "application/json; charset=utf-8",
+			success: (result) => applyFilterSuccess(result),
+			error: (err) => applyFilterError(err)
+		});
+	} else {
+		ajax.post(
+			"/apply_filter",
+			currentFilterCode,
+			(result) => applyFilterSuccess(result),
+			(err) => applyFilterError(err)
+		);
+	}
 });
+
+function applyFilterSuccess(result) {
+	spinnerAreaBottom.addClass(dNone);
+	
+	filteredAudioDiv.removeClass('disabled');
+	filteredAudioDiv.html(createFilteredAudioTag(result.audio));
+	
+	filteredWaveImg.attr('src', result.wave);
+	filteredSpecImg.attr('src', result.spec);
+}
+
+function applyFilterError(err) {
+	spinnerAreaBottom.addClass(dNone);
+	showModalError(err);
+}
 
 function createFilteredAudioTag(audioSource) {
 	return `
@@ -359,44 +386,34 @@ function createFilteredAudioTag(audioSource) {
 	`;
 }
 
-$('#someBtn').click(() => {
-	const form = document.querySelector('form');
-	const data = Object.fromEntries(new FormData(form).entries());
+changeKernelBtn.click(() => {
+	currentFilterCode = 'CK3';
+	selectFilter.val(currentFilterCode);
 
-	$.ajax({
-		type: "POST",
-		url: "/custom_kernel",
-		data: JSON.stringify(data),
-		contentType: "application/json; charset=utf-8",
-		success: (result) => {
-			// if (successCallback) {
-			// 	successCallback(result);
-			// }
-		},
-		error: (err) => {
-			// if (errorCallback) errorCallback(err);
-			// else showModalError(err);
+	for (let i = 0; i < 3; i++) {
+		for (let j = 0; j < 3; j++) {
+			$(`#kernel${i}${j}`).attr('disabled', false);
 		}
-	});
+	}
 });
 
 
 // https://stackoverflow.com/questions/23575218/convert-decimal-number-to-fraction-in-javascript-or-closest-fraction
-function gcd(a, b) {
-	// Since there is a limited precision we need to limit the value.
-	if (b < 0.0000001) return a;
+// function gcd(a, b) {
+// 	// Since there is a limited precision we need to limit the value.
+// 	if (b < 0.0000001) return a;
 
-	// Discard any fractions due to limitations in precision.
-	return gcd(b, Math.floor(a % b));
-}
-function getFraction(decimal) {
-	const len = decimal.toString().length - 2;
-	let denominator = Math.pow(10, len);
-	let numerator = decimal * denominator;
-	const divisor = gcd(numerator, denominator);
+// 	// Discard any fractions due to limitations in precision.
+// 	return gcd(b, Math.floor(a % b));
+// }
+// function getFraction(decimal) {
+// 	const len = decimal.toString().length - 2;
+// 	let denominator = Math.pow(10, len);
+// 	let numerator = decimal * denominator;
+// 	const divisor = gcd(numerator, denominator);
 
-	numerator /= divisor;
-	denominator /= divisor;
+// 	numerator /= divisor;
+// 	denominator /= divisor;
 
-	return Math.floor(numerator) + '/' + Math.floor(denominator);
-}
+// 	return Math.floor(numerator) + '/' + Math.floor(denominator);
+// }
