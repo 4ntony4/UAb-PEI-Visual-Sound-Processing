@@ -348,8 +348,14 @@ function fillKernelForm() {
 
 function buildMatrixForm(size) {
 	let matrixDiv = "";
+
+	let gridTemplateColumns = "";
 	for (let i = 0; i < size; i++) {
-		matrixDiv += `<div id="kernelRow${i}" class="d-grid mGrid111">`;
+		gridTemplateColumns += "1fr "
+	}
+
+	for (let i = 0; i < size; i++) {
+		matrixDiv += `<div id="kernelRow${i}" class="d-grid" style="grid-template-columns: ${gridTemplateColumns};">`;
 		for (let j = 0; j < size; j++) {
 			matrixDiv += `<div><input class="form-control" type="text" id="kernel${i}${j}" name="kernel${i}${j}" disabled></div>`;
 		}
