@@ -38,7 +38,8 @@ const mainDiv = $('#mainDiv'),
 	  filteredSpecImg = $('#filteredSpecImg'),
 	  selectFilter = $('#selectFilter'),
 	  applyFilterBtn = $('#applyFilterBtn'),
-	  changeKernelBtn = $('#changeKernelBtn');
+	  changeKernelBtn = $('#changeKernelBtn'),
+	  kernel = $('#kernel');
 
 let file;
 let filters;
@@ -306,6 +307,7 @@ function fillFilterSelect() {
 }
 
 selectFilter.change(() => {
+	kernel.addClass(dNone);
 	currentFilterCode = selectFilter.val();
 
 	if (currentFilterCode != "0") {
@@ -323,12 +325,16 @@ selectFilter.change(() => {
 });
 
 function fillKernelForm() {
-	if (currentFilterKernel && currentFilterKernel.length == 3) {
+	if (currentFilterKernel) {
+		const matrixSize = currentFilterKernel.length;
+		buildMatrixForm(matrixSize);
+		kernel.removeClass(dNone);
+
 		if (currentFilterCode != 'CK3') changeKernelBtn.removeClass(dNone);
 		else changeKernelBtn.addClass(dNone);
 
-		for (let i = 0; i < 3; i++) {
-			for (let j = 0; j < 3; j++) {
+		for (let i = 0; i < matrixSize; i++) {
+			for (let j = 0; j < matrixSize; j++) {
 				$(`#kernel${i}${j}`).val(currentFilterKernel[i][j]);
 				if (currentFilterCode == 'CK3') $(`#kernel${i}${j}`).attr('disabled', false);
 				else $(`#kernel${i}${j}`).attr('disabled', true);
@@ -336,22 +342,29 @@ function fillKernelForm() {
 		}
 	} else {
 		changeKernelBtn.addClass(dNone);
-
-		for (let i = 0; i < 3; i++) {
-			for (let j = 0; j < 3; j++) {
-				$(`#kernel${i}${j}`).val("");
-				$(`#kernel${i}${j}`).attr('disabled', true);
-			}
-		}
+		kernel.html("");
 	}
+}
+
+function buildMatrixForm(size) {
+	let matrixDiv = "";
+	for (let i = 0; i < size; i++) {
+		matrixDiv += `<div id="kernelRow${i}" class="d-grid mGrid111">`;
+		for (let j = 0; j < size; j++) {
+			matrixDiv += `<div><input class="form-control" type="text" id="kernel${i}${j}" name="kernel${i}${j}" disabled></div>`;
+		}
+		matrixDiv += `</div>`;
+	}
+	kernel.html(matrixDiv);
 }
 
 applyFilterBtn.click(() => {
 	spinnerAreaBottom.removeClass(dNone);
 
 	if (currentFilterCode == 'CK3') {
-		for (let i = 0; i < 3; i++) {
-			for (let j = 0; j < 3; j++) {
+		const matrixSize = currentFilterKernel.length;
+		for (let i = 0; i < matrixSize; i++) {
+			for (let j = 0; j < matrixSize; j++) {
 				currentFilterKernel[i][j] = parseFloat($(`#kernel${i}${j}`).val());
 			}
 		}

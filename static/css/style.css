@@ -137,4 +137,11 @@ body {
 
 .form-control {
 	text-align: center;
+	padding: 0.25rem 0.25rem;
+	border-radius: 0;
+}
+
+.form-control:focus {
+	border-color: var(--darker-background);
+	box-shadow: none;
 }
