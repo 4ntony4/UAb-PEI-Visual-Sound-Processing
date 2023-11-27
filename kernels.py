@@ -6,6 +6,13 @@ identity = np.array([
     [ 0, 0, 0]
 ])
 
+def box_blur(size):
+	return np.full((size, size), fill_value=1/(size**2))
+
+box_blur_3x3 = box_blur(3)
+box_blur_5x5 = box_blur(5)
+box_blur_7x7 = box_blur(7)
+
 # sharpening filter
 sharpen = np.array([
     [  0, -1,  0],

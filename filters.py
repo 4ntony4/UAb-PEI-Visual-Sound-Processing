@@ -34,6 +34,21 @@ filter_dict_list = [
         _kernel: kernels.edge_detection_2.tolist()
     },
     {
+        _name: 'Box Blur 3x3',
+        _code: 'BB3',
+        _kernel: kernels.box_blur_3x3.tolist()
+    },
+    {
+        _name: 'Box Blur 5x5',
+        _code: 'BB5',
+        _kernel: kernels.box_blur_5x5.tolist()
+    },
+    {
+        _name: 'Box Blur 7x7',
+        _code: 'BB7',
+        _kernel: kernels.box_blur_7x7.tolist()
+    },
+    {
         _name: 'Gaussian Blur 3x3',
         _code: 'GB3',
         _kernel: kernels.gaussian_blur_3x3.tolist()
