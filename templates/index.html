@@ -80,58 +80,69 @@
 		</div>
 
 		<div id="mainDiv" class="d-none pb-3">
-			<div class="d-grid mGrid141">
-				
-				<div id="optionsDiv" class="container-fluid">
-					<div class="d-flex flex-column justify-content-center">
-						<button id="waveBtn" type="button" class="btn btn-outline-light m-1 darker_background">Wave View</button>
-						<button id="specBtn" type="button" class="btn btn-outline-light m-1 darker_background">Spectrogram View</button>
+			<div class="container-fluid pb-3">
+				<button id="filterToggleBtn" class="btn btn-outline-light m-1 darker_background" type="button" data-bs-toggle="collapse" data-bs-target="#filtersDiv" aria-expanded="false" aria-controls="filtersDiv">
+					<div class="container-fluid d-flex justify-content-center my-1">
+						<i class="fa-solid fa-sliders fa-xl pe-4"></i>
+						<i id="chevron" class="fa-solid fa-chevron-down fa-lg" aria-hidden="true"></i>
 					</div>
-				</div>
-				
-				<div id="imgDiv" class="container-fluid p-0">
-					<div id="imgDivDFlex" class="d-flex flex-column justify-content-center gap-3">
-						<div id="waveImgDiv" class="d-flex flex-column justify-content-center gap-3 d-none">
-							<img id="originalWaveImg" class="img-fluid" />
-							<img id="filteredWaveImg" class="img-fluid" />
-						</div>
-						<div id="specImgDiv" class="d-flex flex-column justify-content-center gap-3 d-none">
-							<img id="originalSpecImg" class="img-fluid" />
-							<img id="filteredSpecImg" class="img-fluid" />
-						</div>
-					</div>
-				</div>
-				
-				<div>
-					<div id="mainRightDiv" class="container-fluid">
-						<div class="d-flex flex-column justify-content-center">
-
-							<div class="container-fluid d-flex justify-content-center mb-1">
-								<i class="fa-solid fa-sliders fa-2xl whitish"></i>
+				</button>
+			</div>
+			<div id="filtersDiv" class="collapse pb-3">
+				<div class="d-grid mGrid15">
+						<div id="applyFilterDiv" class="container-fluid pb-3">
+							<div class="d-flex flex-column justify-content-center lighter_background p-2">
+								<select id="selectFilter" class="form-select m-1" aria-label="Select filter"></select>
+								<button id="applyFilterBtn" type="button" class="btn btn-outline-light darker_background m-1 py-3" disabled>
+									Apply Filter
+									<br>
+									<i class="fa-solid fa-bolt fa-xl"></i>
+								</button>
 							</div>
-							<select id="selectFilter" class="form-select m-1" aria-label="Select filter"></select>
-							<button id="applyFilterBtn" type="button" class="btn btn-outline-light darker_background m-1 py-3" disabled>
-								Apply Filter
-								<br>
-								<i class="fa-solid fa-bolt fa-xl"></i>
-							</button>
-
-							<form id="kernel" class="container-fluid px-1 pt-1 d-none"></form>
-
-							<button id="changeKernelBtn" type="button" class="btn btn-outline-light m-1 darker_background d-none">Change Kernel</button>
-							
-							<div id="spinnerAreaBottom" class="container-fluid pb-3 d-none">
-								<div class="d-flex justify-content-center py-4">
+							<div id="spinnerAreaBottom" class="container-fluid d-none">
+								<div class="d-flex justify-content-center pt-4">
 									<div class="spinner-border text-light" role="status">
 										<span class="sr-only">Loading...</span>
 									</div>
 								</div>
 							</div>
-						</div>	
+						</div>
+						<div id="kernelDiv" class="container-fluid ps-0">
+							<div class="container-fluid">
+								<div class="d-flex flex-column justify-content-center">
+									<form id="kernel" class="container-fluid px-1 pt-1 d-none"></form>
+								</div>
+								<div class="d-flex pt-2">
+									<button id="changeKernelBtn" type="button" class="btn btn-outline-light m-1 darker_background d-none">Change Kernel</button>
+								</div>
+							</div>
+						</div>
 					</div>
-				</div>
-			</div>	
+			</div>
+			<div id="plotsDiv">
+				<div class="d-grid mGrid15">
+					<div id="optionsDiv" class="container-fluid">
+						<div class="d-flex flex-column justify-content-center lighter_background p-2">
+							<button id="waveBtn" type="button" class="btn btn-outline-light m-1 darker_background">Wave View</button>
+							<button id="specBtn" type="button" class="btn btn-outline-light m-1 darker_background">Spectrogram View</button>
+						</div>
+					</div>
+					<div id="imgDiv" class="container-fluid ps-0">
+						<div id="imgDivDFlex" class="d-flex flex-column justify-content-center gap-3">
+							<div id="waveImgDiv" class="d-flex flex-column justify-content-center gap-3 d-none">
+								<img id="originalWaveImg" class="img-fluid" />
+								<img id="filteredWaveImg" class="img-fluid" />
+							</div>
+							<div id="specImgDiv" class="d-flex flex-column justify-content-center gap-3 d-none">
+								<img id="originalSpecImg" class="img-fluid" />
+								<img id="filteredSpecImg" class="img-fluid" />
+							</div>
+						</div>
+					</div>
+				</div>	
+			</div>
 		</div>
+
 		<div id="spinnerFooter" class="container-fluid pb-3 d-none">
 			<div class="d-flex justify-content-center py-4">
 				<div class="spinner-border text-light" role="status">

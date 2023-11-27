@@ -349,15 +349,22 @@ function fillKernelForm() {
 function buildMatrixForm(size) {
 	let matrixDiv = "";
 
+	const defaultColumns = 11;
 	let gridTemplateColumns = "";
-	for (let i = 0; i < size; i++) {
-		gridTemplateColumns += "1fr "
+	if (size > defaultColumns) {
+		for (let i = 0; i < size; i++) {
+			gridTemplateColumns += "1fr "
+		}
+	} else {
+		for (let i = 0; i < defaultColumns; i++) {
+			gridTemplateColumns += "1fr "
+		}
 	}
 
 	for (let i = 0; i < size; i++) {
 		matrixDiv += `<div id="kernelRow${i}" class="d-grid" style="grid-template-columns: ${gridTemplateColumns};">`;
 		for (let j = 0; j < size; j++) {
-			matrixDiv += `<div><input class="form-control" type="text" id="kernel${i}${j}" name="kernel${i}${j}" disabled></div>`;
+			matrixDiv += `<div class="small-p"><input class="form-control" type="text" id="kernel${i}${j}" name="kernel${i}${j}" disabled></div>`;
 		}
 		matrixDiv += `</div>`;
 	}
@@ -422,31 +429,15 @@ function createFilteredAudioTag(audioSource) {
 changeKernelBtn.click(() => {
 	currentFilterCode = 'CK3';
 	selectFilter.val(currentFilterCode);
+	const matrixSize = currentFilterKernel.length;
 
-	for (let i = 0; i < 3; i++) {
-		for (let j = 0; j < 3; j++) {
+	for (let i = 0; i < matrixSize; i++) {
+		for (let j = 0; j < matrixSize; j++) {
 			$(`#kernel${i}${j}`).attr('disabled', false);
 		}
 	}
 });
 
-
-// https://stackoverflow.com/questions/23575218/convert-decimal-number-to-fraction-in-javascript-or-closest-fraction
-// function gcd(a, b) {
-// 	// Since there is a limited precision we need to limit the value.
-// 	if (b < 0.0000001) return a;
-
-// 	// Discard any fractions due to limitations in precision.
-// 	return gcd(b, Math.floor(a % b));
-// }
-// function getFraction(decimal) {
-// 	const len = decimal.toString().length - 2;
-// 	let denominator = Math.pow(10, len);
-// 	let numerator = decimal * denominator;
-// 	const divisor = gcd(numerator, denominator);
-
-// 	numerator /= divisor;
-// 	denominator /= divisor;
-
-// 	return Math.floor(numerator) + '/' + Math.floor(denominator);
-// }
+$('#filterToggleBtn').click(() => {
+	$('#chevron').toggleClass('rotate180');
+});

@@ -4,6 +4,7 @@
 	--whitish: #f8f9fa;
 	--blackish: #212529;
 	--gray: #565e64;
+	--gray-300: #dee2e6;
 	--background: #5256ad;
 	--lighter_background: #6c6fae;
 	--darker-background: #3c3f7e;
@@ -48,20 +49,16 @@ body {
 	grid-template-columns: 1fr 3fr 1fr;
 }
 
+.mGrid151 {
+	grid-template-columns: 1fr 5fr 1fr;
+}
+
 .mGrid15 {
 	grid-template-columns: 1fr 5fr;
 }
 
 .mGrid11 {
 	grid-template-columns: 1fr 1fr;
-}
-
-.mGrid111 {
-	grid-template-columns: 1fr 1fr 1fr;
-}
-
-.mGrid141 {
-	grid-template-columns: 1fr 4fr 1fr;
 }
 
 .dragArea {
@@ -143,5 +140,17 @@ body {
 
 .form-control:focus {
 	border-color: var(--darker-background);
-	box-shadow: none;
+	box-shadow: 0 0 0 .25rem rgba(150, 255, 0, 0.6);
+}
+
+.form-control:disabled {
+	background-color: var(--gray-300);
+}
+
+.small-p {
+	padding: 2px;
+}
+
+.rotate180 {
+	transform: rotate(180deg);
 }
