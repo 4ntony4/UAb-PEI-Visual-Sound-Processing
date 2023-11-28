@@ -21,7 +21,6 @@ const lighterBackground = "lighter_background",
 	  dNone = "d-none",
 	  active = "active",
 	  error = "Error",
-	  dragNDropText = "Drag & Drop to Upload File",
 	  audioSupportedText = "Only mpeg and wav files are supported.",
 	  fileMissingText = "File missing.",
 	  serverErrorText = "Server Internal Error. Please try again later.",
@@ -37,14 +36,21 @@ const mainDiv = $('#mainDiv'),
 	  originalSpecImg = $('#originalSpecImg'),
 	  filteredSpecImg = $('#filteredSpecImg'),
 	  selectFilter = $('#selectFilter'),
+	  selectMatrixSize = $('#selectMatrixSize'),
 	  applyFilterBtn = $('#applyFilterBtn'),
 	  changeKernelBtn = $('#changeKernelBtn'),
-	  kernel = $('#kernel');
+	  kernel = $('#kernel'),
+	  filterToggleBtn = $('#filterToggleBtn');
 
 let file;
 let filters;
 let currentFilterCode;
 let currentFilterKernel = null;
+let currentMatrixSize;
+const ckx = 'CKX';
+const mdn = 'MDN';
+const minMatrixSize = 3;
+const defaultColumns = 11;
 
 const ajax = {
 	get: (url, successCallback, errorCallback) => {
@@ -202,6 +208,8 @@ function start() {
 			}
 		);
 
+		fillMatrixSizeSelect();
+
 		ajax.get(
 			"/filter_list",
 			(result) => {
@@ -306,37 +314,81 @@ function fillFilterSelect() {
 	currentFilterCode = selectFilter.val();
 }
 
+function fillMatrixSizeSelect() {
+	selectMatrixSize.empty();
+
+	const optionTitle = new Option('Kernel Size', 0);
+	optionTitle.setAttribute("disabled", "disabled");
+	selectMatrixSize.append(optionTitle);
+
+	for (let i = minMatrixSize; i <= defaultColumns; i += 2) {
+		const option = new Option(`${i} x ${i}`, i);
+		selectMatrixSize.append(option);
+	}
+
+	currentMatrixSize = Number(selectMatrixSize.val());
+}
+
 selectFilter.change(() => {
 	kernel.addClass(dNone);
 	currentFilterCode = selectFilter.val();
 
-	if (currentFilterCode != "0") {
-		applyFilterBtn.attr('disabled', false);
-		applyFilterBtn.addClass(lighterBackground);
-	} else {
+	if (currentFilterCode == "0") {
 		applyFilterBtn.attr('disabled', true);
 		applyFilterBtn.removeClass(lighterBackground);
+		selectMatrixSize.addClass(dNone);
+	} else {
+		applyFilterBtn.attr('disabled', false);
+		applyFilterBtn.addClass(lighterBackground);
+		if (currentFilterCode == mdn) {
+			selectMatrixSize.addClass(dNone);
+		}
+		else selectMatrixSize.removeClass(dNone);
 	}
 
 	const currentFilter = filters.find((element) => element.code == currentFilterCode);
-	if (currentFilter) currentFilterKernel = currentFilter.kernel;
+	if (currentFilter) {
+		if (currentFilterCode == ckx) {
+			selectMatrixSize.attr('disabled', false);
+		} else {
+			selectMatrixSize.attr('disabled', true);
+		}
+
+		if (currentFilter.kernel) {
+			currentFilterKernel = currentFilter.kernel;
+			currentMatrixSize = currentFilterKernel.length;
+			selectMatrixSize.val(currentMatrixSize);
+		}
+	}
 	else currentFilterKernel = null;
+
 	fillKernelForm();
 });
 
+selectMatrixSize.change(() => {
+	currentMatrixSize = Number(selectMatrixSize.val());
+	fillKernelForm();
+
+});
+
 function fillKernelForm() {
-	if (currentFilterKernel) {
-		const matrixSize = currentFilterKernel.length;
-		buildMatrixForm(matrixSize);
+	if (currentFilterKernel && currentFilterCode != mdn) {
+		kernelMatrixSize = currentFilterKernel.length;
+
+		buildMatrixForm(currentMatrixSize);
 		kernel.removeClass(dNone);
 
-		if (currentFilterCode != 'CK3') changeKernelBtn.removeClass(dNone);
+		if (currentFilterCode != ckx) changeKernelBtn.removeClass(dNone);
 		else changeKernelBtn.addClass(dNone);
 
-		for (let i = 0; i < matrixSize; i++) {
-			for (let j = 0; j < matrixSize; j++) {
-				$(`#kernel${i}${j}`).val(currentFilterKernel[i][j]);
-				if (currentFilterCode == 'CK3') $(`#kernel${i}${j}`).attr('disabled', false);
+		for (let i = 0; i < currentMatrixSize; i++) {
+			for (let j = 0; j < currentMatrixSize; j++) {
+				if (i < kernelMatrixSize && j < kernelMatrixSize && currentFilterKernel[i][j]) {
+					$(`#kernel${i}${j}`).val(currentFilterKernel[i][j]);
+				}
+				else $(`#kernel${i}${j}`).val(0);
+
+				if (currentFilterCode == ckx) $(`#kernel${i}${j}`).attr('disabled', false);
 				else $(`#kernel${i}${j}`).attr('disabled', true);
 			}
 		}
@@ -349,7 +401,6 @@ function fillKernelForm() {
 function buildMatrixForm(size) {
 	let matrixDiv = "";
 
-	const defaultColumns = 11;
 	let gridTemplateColumns = "";
 	if (size > defaultColumns) {
 		for (let i = 0; i < size; i++) {
@@ -374,17 +425,18 @@ function buildMatrixForm(size) {
 applyFilterBtn.click(() => {
 	spinnerAreaBottom.removeClass(dNone);
 
-	if (currentFilterCode == 'CK3') {
-		const matrixSize = currentFilterKernel.length;
-		for (let i = 0; i < matrixSize; i++) {
-			for (let j = 0; j < matrixSize; j++) {
-				currentFilterKernel[i][j] = parseFloat($(`#kernel${i}${j}`).val());
+	if (currentFilterCode == ckx) {
+		let customArray = Array(currentMatrixSize);
+		for (let i = 0; i < currentMatrixSize; i++) {
+			customArray[i] = Array(currentMatrixSize);
+			for (let j = 0; j < currentMatrixSize; j++) {
+				customArray[i][j] = parseFloat($(`#kernel${i}${j}`).val());
 			}
 		}
 		$.ajax({
 			type: "POST",
 			url: "/apply_custom_kernel",
-			data: JSON.stringify(currentFilterKernel),
+			data: JSON.stringify(customArray),
 			contentType: "application/json; charset=utf-8",
 			success: (result) => applyFilterSuccess(result),
 			error: (err) => applyFilterError(err)
@@ -427,7 +479,8 @@ function createFilteredAudioTag(audioSource) {
 }
 
 changeKernelBtn.click(() => {
-	currentFilterCode = 'CK3';
+	selectMatrixSize.attr('disabled', false);
+	currentFilterCode = ckx;
 	selectFilter.val(currentFilterCode);
 	const matrixSize = currentFilterKernel.length;
 
@@ -438,6 +491,6 @@ changeKernelBtn.click(() => {
 	}
 });
 
-$('#filterToggleBtn').click(() => {
+filterToggleBtn.click(() => {
 	$('#chevron').toggleClass('rotate180');
 });

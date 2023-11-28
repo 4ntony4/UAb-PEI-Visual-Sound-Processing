@@ -1,10 +1,12 @@
 import numpy as np
 
-identity = np.array([
-    [ 0, 0, 0],
-    [ 0, 1, 0],
-    [ 0, 0, 0]
-])
+# identity = np.array([
+#     [ 0, 0, 0],
+#     [ 0, 1, 0],
+#     [ 0, 0, 0]
+# ])
+
+zeros3 = np.zeros((3, 3))
 
 def box_blur(size):
 	return np.full((size, size), fill_value=1/(size**2))

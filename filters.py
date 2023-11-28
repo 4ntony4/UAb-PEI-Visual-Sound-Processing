@@ -9,9 +9,9 @@ _kernel = 'kernel'
 
 filter_dict_list = [
     {
-        _name: 'Custom Kernel 3x3',
-        _code: 'CK3',
-        _kernel: kernels.identity.tolist()
+        _name: 'Custom Kernel',
+        _code: 'CKX',
+        _kernel: kernels.zeros3.tolist()
     },
     {
         _name: 'Median',
