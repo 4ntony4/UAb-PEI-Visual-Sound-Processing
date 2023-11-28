@@ -1,11 +1,11 @@
 import base64
 import io
 
+import IPython.display as ipd
 import librosa
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
-import IPython.display as ipd
 
 matplotlib.use('agg')
 Pair = tuple[np.ndarray, float]

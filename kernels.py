@@ -1,5 +1,6 @@
 import numpy as np
 
+
 def identity_kernel(size=3):
     if (size + 1) % 2 != 0:
         error_message = "Argument size must be an odd number"

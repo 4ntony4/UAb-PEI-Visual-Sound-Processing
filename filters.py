@@ -1,7 +1,8 @@
-import kernels
-import padding
-import main
 import numpy as np
+
+import kernels
+import main
+import padding
 
 _name = 'name'
 _code = 'code'

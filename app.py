@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, make_response, render_template, request
 
-import main
 import filters
+import main
 
 app = Flask(__name__, template_folder='templates', static_folder='static')
 
