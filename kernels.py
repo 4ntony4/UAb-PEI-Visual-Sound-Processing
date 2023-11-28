@@ -1,15 +1,18 @@
 import numpy as np
 
-# identity = np.array([
-#     [ 0, 0, 0],
-#     [ 0, 1, 0],
-#     [ 0, 0, 0]
-# ])
+def identity_kernel(size=3):
+    if (size + 1) % 2 != 0:
+        error_message = "Argument size must be an odd number"
+        raise Exception(error_message)
 
-zeros3 = np.zeros((3, 3))
+    identity = np.zeros((size, size), np.int8)
+    mid = int((size - 1) / 2)
+    identity[mid,mid] = 1
+
+    return identity
 
 def box_blur(size):
-	return np.full((size, size), fill_value=1/(size**2))
+    return np.full((size, size), fill_value=1/(size**2))
 
 box_blur_3x3 = box_blur(3)
 box_blur_5x5 = box_blur(5)

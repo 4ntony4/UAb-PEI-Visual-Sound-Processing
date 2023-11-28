@@ -11,7 +11,7 @@ filter_dict_list = [
     {
         _name: 'Custom Kernel',
         _code: 'CKX',
-        _kernel: kernels.zeros3.tolist()
+        _kernel: kernels.identity_kernel().tolist()
     },
     {
         _name: 'Median',
