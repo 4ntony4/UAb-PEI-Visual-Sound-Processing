@@ -1,9 +1,22 @@
 # UAb-PEI-Visual-Sound-Processing
+Experimental web-app for applying image processing filters to audio files.
 
-python app.py
+## Run locally
+### Create virtualenv
+	virtualenv -p [path-to-python3-version] [folder-path-where-you-want-virtualenv]/[virtualenv-name]
 
-(python -m flask run)
+### Activate virtualenv
+	source [virtualenv-path]/bin/activate
 
-app.run(host='0.0.0.0', port=5500)
+### Install requirements
+	pip install -r [project-root-folder-path]/requirements.txt
+
+### Run App
+Be sure your virtualenv is activated.
+
+	[virtualenv-path]/bin/python [project-root-folder-path]/app.py
+
+## View it on replit
+Until Jan 1st 2024 this project can be seen at:
 
 https://uab-pei-visual-sound-processing.diogoantao.repl.co/
