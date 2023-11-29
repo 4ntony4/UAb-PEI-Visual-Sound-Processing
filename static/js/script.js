@@ -154,8 +154,8 @@ function showOriginalAudioTag(fileURL, fileName) {
 	dragDiv.addClass(dNone);
 	audioDiv.removeClass(dNone);
 	originalAudioDiv.html(createOriginalAudioTag(fileURL, fileName));
-	start();
 	spinnerFooter.addClass(dNone);
+	start();
 }
 
 function createOriginalAudioTag(fileURL, fileName) {
@@ -190,6 +190,7 @@ function start() {
 	if (audioDiv.hasClass(dNone)) {
 		showModalFileMissing();
 	} else {
+		mainDiv.removeClass(dNone);
 		spinnerFooter.removeClass(dNone);
 
 		const source = $('#originalAudioSource').attr('src');
@@ -203,7 +204,6 @@ function start() {
 			"/start",
 			staticSource,
 			(_) => {
-				mainDiv.removeClass(dNone);
 				waveBtn.click();
 			}
 		);
@@ -224,7 +224,8 @@ function start() {
 				});
 				fillFilterSelect();
 				spinnerFooter.addClass(dNone);
-			}
+			},
+			(_) => spinnerFooter.addClass(dNone)
 		);
 	}
 }
