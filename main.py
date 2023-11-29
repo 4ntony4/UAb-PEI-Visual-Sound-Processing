@@ -6,12 +6,20 @@ import librosa
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+from werkzeug.datastructures import FileStorage
 
 matplotlib.use('agg')
 Pair = tuple[np.ndarray, float]
 
 def load(cached_audio_file, sr=22050):
-    return librosa.load(cached_audio_file, sr=sr)
+    if type(cached_audio_file) == str:
+        with open(cached_audio_file, 'rb') as fp:
+            f = FileStorage(fp)
+            y, s_rate = librosa.load(f, sr=sr)
+    else:
+        y, s_rate = librosa.load(cached_audio_file, sr=sr)
+
+    return y, s_rate
 
 def get_info_ndarray(ndarray):
     return (
