@@ -1,6 +1,7 @@
 const dragArea = document.querySelector(".dragArea"),
 	  dragInput = dragArea.querySelector("#audioFile"),
 	  dragDiv = $('#dragDiv'),
+	  squareWave = $('#squareWave'),
 	  spinnerAreaDragDiv = $('#spinnerAreaDragDiv'),
 	  spinnerAreaBottom = $('#spinnerAreaBottom'),
 	  spinnerFooter = $('#spinnerFooter'),
@@ -151,6 +152,7 @@ function cacheAndShowAudioFile(file, fileURL) {
 
 function showOriginalAudioTag(fileURL, fileName) {
 	spinnerFooter.removeClass(dNone);
+	squareWave.addClass(dNone);
 	dragDiv.addClass(dNone);
 	audioDiv.removeClass(dNone);
 	originalAudioDiv.html(createOriginalAudioTag(fileURL, fileName));
