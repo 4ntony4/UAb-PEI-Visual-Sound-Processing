@@ -196,9 +196,7 @@ def convolve_2D(matrix_a, matrix_b):
     ###
     for i in range(m):
         for j in range(n):
-            # print(i,j) #debug
-            # print(matrix_a[m - i - 1, n - j - 1], ".", matrix_b[i, j]) #debug
-            result += matrix_a[m - i - 1, n - j - 1] * matrix_b[i, j]
+            result += matrix_a[i, j] * matrix_b[m - i - 1, n - j - 1]
     ###
     
     return result
