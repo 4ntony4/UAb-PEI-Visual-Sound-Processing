@@ -19,25 +19,6 @@ box_blur_3x3 = box_blur(3)
 box_blur_5x5 = box_blur(5)
 box_blur_7x7 = box_blur(7)
 
-# sharpening filter
-sharpen = np.array([
-    [  0, -1,  0],
-    [ -1,  5, -1],
-    [  0, -1,  0]
-])
-
-edge_detection_1 = np.array([
-    [  0, -1,  0],
-    [ -1,  4, -1],
-    [  0, -1,  0]
-])
-
-edge_detection_2 = np.array([
-    [ -1, -1, -1],
-    [ -1,  8, -1],
-    [ -1, -1, -1]
-])
-
 # smoothing linear filter
 # weighted average linear filter
 # (approximation)
@@ -113,4 +94,16 @@ sobel_horizontal = np.array([
     [  1,  2,  1],
     [  0,  0,  0],
     [ -1, -2, -1]
+])
+
+edge_detection_1 = np.array([
+    [  0, -1,  0],
+    [ -1,  4, -1],
+    [  0, -1,  0]
+])
+
+edge_detection_2 = np.array([
+    [ -1, -1, -1],
+    [ -1,  8, -1],
+    [ -1, -1, -1]
 ])

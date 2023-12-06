@@ -20,21 +20,6 @@ filter_dict_list = [
         _kernel: None
     },
     {
-        _name: 'Sharpen',
-        _code: 'SHP',
-        _kernel: kernels.sharpen.tolist()
-    },
-    {
-        _name: 'Edge Detection 1',
-        _code: 'ED1',
-        _kernel: kernels.edge_detection_1.tolist()
-    },
-    {
-        _name: 'Edge Detection 2',
-        _code: 'ED2',
-        _kernel: kernels.edge_detection_2.tolist()
-    },
-    {
         _name: 'Box Blur 3x3',
         _code: 'BB3',
         _kernel: kernels.box_blur_3x3.tolist()
@@ -93,6 +78,16 @@ filter_dict_list = [
         _name: 'Sobel Horizontal',
         _code: 'SBH',
         _kernel: kernels.sobel_horizontal.tolist()
+    },
+    {
+        _name: 'Edge Detection 1',
+        _code: 'ED1',
+        _kernel: kernels.edge_detection_1.tolist()
+    },
+    {
+        _name: 'Edge Detection 2',
+        _code: 'ED2',
+        _kernel: kernels.edge_detection_2.tolist()
     }
 ]
 
@@ -101,7 +96,11 @@ def apply_filter(y, code):
     if item:
         if item[_kernel]:
             D = main.stft(y)
-            return convolution_filter(D, np.array(item[_kernel]))
+
+            if ('LP' in code):
+                return convolution_filter(D, np.array(item[_kernel]), laplacian_c=-1)
+            else:
+                return convolution_filter(D, np.array(item[_kernel]))
         else:
             if item[_code] == 'MDN':
                 D = main.stft(y)
@@ -160,7 +159,7 @@ def median_filter(matrix_2D, neighborhood_matrix_size=3, padding_mode='constant'
     
     return filtered_matrix
 
-def convolution_filter(matrix_2D, kernel, padding_mode='nearest'):
+def convolution_filter(matrix_2D, kernel, padding_mode='nearest', laplacian_c=None):
     if padding_mode != 'nearest':
         error_message = "Padding mode not implemented"
         raise Exception(error_message)
@@ -176,7 +175,10 @@ def convolution_filter(matrix_2D, kernel, padding_mode='nearest'):
     for i in range (n_padding_lines, len(padding_matrix) - n_padding_lines):
         for j in range (n_padding_lines, len(padding_matrix[i]) - n_padding_lines):
             matrix_region = neighborhood(padding_matrix, i, j, kernel.shape[0])
-            filtered_matrix[i - n_padding_lines, j - n_padding_lines] = convolve_2D(matrix_region, kernel)
+            if laplacian_c is None:
+                filtered_matrix[i - n_padding_lines, j - n_padding_lines] = convolve_2D(matrix_region, kernel)
+            else:
+                filtered_matrix[i - n_padding_lines, j - n_padding_lines] = padding_matrix[i - n_padding_lines, j - n_padding_lines] + laplacian_c * convolve_2D(matrix_region, kernel)
     ###
     
     return filtered_matrix
