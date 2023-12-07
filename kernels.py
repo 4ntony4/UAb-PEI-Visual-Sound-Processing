@@ -95,15 +95,3 @@ sobel_horizontal = np.array([
     [  0,  0,  0],
     [ -1, -2, -1]
 ])
-
-edge_detection_1 = np.array([
-    [  0, -1,  0],
-    [ -1,  4, -1],
-    [  0, -1,  0]
-])
-
-edge_detection_2 = np.array([
-    [ -1, -1, -1],
-    [ -1,  8, -1],
-    [ -1, -1, -1]
-])

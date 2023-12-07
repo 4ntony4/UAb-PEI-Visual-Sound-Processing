@@ -78,16 +78,6 @@ filter_dict_list = [
         _name: 'Sobel Horizontal',
         _code: 'SBH',
         _kernel: kernels.sobel_horizontal.tolist()
-    },
-    {
-        _name: 'Edge Detection 1',
-        _code: 'ED1',
-        _kernel: kernels.edge_detection_1.tolist()
-    },
-    {
-        _name: 'Edge Detection 2',
-        _code: 'ED2',
-        _kernel: kernels.edge_detection_2.tolist()
     }
 ]
 
