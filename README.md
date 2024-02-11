@@ -1,6 +1,8 @@
 # UAb-PEI-Visual-Sound-Processing
 Experimental web-app for applying image processing filters to audio files.
 
+[![Replit Fork & Run](https://img.shields.io/badge/Replit-Fork_&_Run-informational?logo=replit&labelColor=white)](https://replit.com/@DiogoAntao/UAb-PEI-Visual-Sound-Processing)
+
 ## Run locally
 ### Create virtualenv
 	virtualenv -p [path-to-python3-version] [folder-path-where-you-want-virtualenv]/[virtualenv-name]
@@ -16,7 +18,5 @@ Be sure your virtualenv is activated.
 
 	[virtualenv-path]/bin/python [project-root-folder-path]/app.py
 
-## View it on replit
-Until Jan 1st 2024 this project can be seen at:
-
-https://uab-pei-visual-sound-processing.diogoantao.repl.co/
+## <a href="https://replit.com/"><img src="https://raw.githubusercontent.com/4ntony4/UAb/eba38fc374dc7ba986ecfb0b1a54e4c4ccc5117b/img/logos/replit/replit.svg" alt="Replit" width="35"></a> Replit
+Fork & Run it on Replit [here](https://replit.com/@DiogoAntao/UAb-PEI-Visual-Sound-Processing).
